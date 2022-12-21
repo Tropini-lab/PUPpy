@@ -1,8 +1,6 @@
-# <img src="./man/figures/Tropini_Lab_logo.png" align="right" height="150" /> Snakemake workflow: *in vivo* bacterial replication rates
+# <img src="./man/figures/Tropini_Lab_logo.png" align="right" height="150" /> PUPpy - A pipeline to design taxon-specific primers for any defined bacterial community.
 
 ### By: Hans Ghezzi - Tropini Lab
 
 ***
 
-# PUPpy_pipeline
-Repository with codes, analyses and example workflows for the taxon-species primer pipeline (PUPpy).
