@@ -13,8 +13,10 @@ Input CDS files are aligned using [MMseqs2](https://github.com/soedinglab/MMseqs
 
 # IMPORTANT:
 
-1) PUPpy was developed to design taxon-specific primers in a **DEFINED** bacterial community. While in limiting cases it may be possible to use these primers in undefined communities, this cannot be ensured through this pipeline
-2) Primers should **always** be tested *in vitro* prior to use. PCR can be a mistery, and while primers may look perfect *in silico*, we strongly encourage testing their specifity *in vitro* prior to use.
+1) PUPpy was developed to design taxon-specific primers in a **DEFINED** bacterial community. 
+While in limiting cases it may be possible to use these primers in undefined communities, this cannot be ensured through this pipeline
+2) Primers should **always** be tested *in vitro* prior to use. 
+PCR can be a mistery, and while primers may look perfect *in silico*, we strongly encourage testing their specifity *in vitro* prior to use.
 
 # Installation
 
