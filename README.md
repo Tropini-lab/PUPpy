@@ -87,7 +87,9 @@ pip install psutil
 If you cannot use Conda, you can clone this repository and run the scripts directly
 
 ```sh
+# Clone repository
 git clone https://github.com/Tropini-lab/PUPpy_pipeline.git
+# Move to directory with PUPpy scripts
 cd PUPpy_pipeline/scripts
 ```
 
