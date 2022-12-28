@@ -70,5 +70,18 @@ pip install colorama
 pip install psutil
 ```
 
+# Simple usage
 
+PUPpy consists of 2 main steps: 1) aligning the input genes and 2) designing taxon-specific primers.
 
+The alignment step must always be run for any new defined bacterial community:
+
+```python
+python alignments.py -c input_CDS_dir -o OUT_dir
+```
+
+The second step is where users choose whether to design taxon-specific primers unique to individual members or shared by groups of the bacterial community.
+
+```python
+python primerDesign.py -t Target_Species_CDSes -i input_alignments.tsv -o OUT_primerDir
+```
