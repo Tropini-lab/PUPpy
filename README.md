@@ -8,14 +8,13 @@ PUPpy (Phylogenetically Unique Primers in python) is a computational pipeline de
 
 # Overview
 
-PUPpy takes any number of bacterial CDS files as input. CDS files must be generated from one of these 3 programs: Prokka, RAST or downloaded from the NCBI. 
-Input CDS files are aligned using [MMseqs2](https://github.com/soedinglab/MMseqs2) and then parsed to identify candidate unique or group-specific genes within the defined bacterial community provided by the user. Taxon-specific primers are then designed using Primer3 and provided as output in an Excel file.
+PUPpy takes any number of bacterial CDS files as input. CDS files must be generated from one of these 3 programs: Prokka, RAST or downloaded from the NCBI. Input CDS files are aligned using [MMseqs2](https://github.com/soedinglab/MMseqs2) and then parsed to identify candidate unique or group-specific genes within the defined bacterial community provided by the user. Taxon-specific primers are then designed using Primer3 and provided as output in an Excel file.
 
 # IMPORTANT:
 
 1) PUPpy was developed to design taxon-specific primers in a **DEFINED** bacterial community. 
 While in limiting cases it may be possible to use these primers in undefined communities, this cannot be ensured through this pipeline
-2) Primers should **always** be tested *in vitro* prior to use. 
+4) Primers should **always** be tested *in vitro* prior to use. 
 PCR can be a mistery, and while primers may look perfect *in silico*, we strongly encourage testing their specifity *in vitro* prior to use.
 
 # Installation
