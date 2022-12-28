@@ -84,6 +84,13 @@ pip install colorama
 pip install psutil
 ```
 
+If you cannot use Conda, you can clone this repository and run the scripts directly
+
+```sh
+git clone https://github.com/Tropini-lab/PUPpy_pipeline.git
+cd PUPpy_pipeline/scripts
+```
+
 # Simple usage
 
 PUPpy consists of 2 main steps: 1) aligning the input genes and 2) designing taxon-specific primers.
