@@ -6,6 +6,16 @@
 
 PUPpy (Phylogenetically Unique Primers in python) is a computational pipeline developed to design taxon-specific primers within a defined bacterial community. PUPpy can design both strain-specific primers, which selectively amplify each member of the community, and group-specific primers, which selectively amplify user-selected members. Primers designed with the pipeline can be used to assess the presence/absence of bacteria in samples through PCR, as well as quantify their abundance via qPCR. 
 
+# Overview
+
+PUPpy takes any number of bacterial CDS files as input. CDS files must be generated from one of these 3 programs: Prokka, RAST or downloaded from the NCBI. 
+Input CDS files are aligned using [MMseqs2](https://github.com/soedinglab/MMseqs2) and then parsed to identify candidate unique or group-specific genes within the defined bacterial community provided by the user. Taxon-specific primers are then designed using Primer3 and provided as output in an Excel file.
+
+# IMPORTANT:
+
+1) PUPpy was developed to design taxon-specific primers in a **DEFINED** bacterial community. While in limiting cases it may be possible to use these primers in undefined communities, this cannot be ensured through this pipeline
+2) Primers should **always** be tested *in vitro* prior to use. PCR can be a mistery, and while primers may look perfect *in silico*, we strongly encourage testing their specifity *in vitro* prior to use.
+
 # Installation
 
 PUPpy can be installed thorugh Conda for mac and Linux, or by installing the required dependencies.
@@ -15,7 +25,7 @@ PUPpy can be installed thorugh Conda for mac and Linux, or by installing the req
 <ADD CODE HERE>
 ```
 
-If this were to fail, you can create the required Conda environment from this GitHub directory.
+Otherwise, you can create the required Conda environment from this GitHub directory.
 
 ```sh
 # Deactivate Conda environment
@@ -77,11 +87,12 @@ PUPpy consists of 2 main steps: 1) aligning the input genes and 2) designing tax
 The alignment step must always be run for any new defined bacterial community:
 
 ```python
-python alignments.py -c input_CDS_dir -o OUT_dir
+python alignments.py -c input_CDS_dir -o OUT_alignment_dir
 ```
 
 The second step is where users choose whether to design taxon-specific primers unique to individual members or shared by groups of the bacterial community.
+This step can be run multiple times changing the target species, or primer-design parameters, while keeping the same input)alignments.tsv generated in step 1.
 
 ```python
-python primerDesign.py -t Target_Species_CDSes -i input_alignments.tsv -o OUT_primerDir
+python primerDesign.py -t Target_Species_CDSes -i OUT_alignment_dir/ResultDB.tsv -o OUT_primerDir
 ```
