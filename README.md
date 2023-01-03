@@ -40,8 +40,8 @@ git clone https://github.com/Tropini-lab/PUPpy_pipeline.git
 
 # Create conda environment
 cd PUPpy_pipeline
-conda env create -f environment.yml
-conda activate PUPpy_pipeline
+conda env create -f PUPpy_environment.yml
+conda activate PUPpy
 ```
 
 Alternatively, you can manually set up a conda environment with the individual dependencies:
