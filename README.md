@@ -100,12 +100,12 @@ PUPpy consists of 2 main steps: 1) aligning the input genes and 2) designing tax
 The alignment step must always be run for any new defined bacterial community:
 
 ```python
-python alignments.py -c input_CDS_dir -o OUT_alignment_dir
+python alignments.py -c test/input -o test/alignment_output
 ```
 
 The second step is where users choose whether to design taxon-specific primers unique to individual members or shared by groups of the bacterial community.
 This step can be run multiple times changing the target species, or primer-design parameters, while keeping the same input)alignments.tsv generated in step 1.
 
 ```python
-python primerDesign.py -t Target_Species_CDSes -i OUT_alignment_dir/ResultDB.tsv -o OUT_primerDir
+python primerDesign.py -t test/input -i test/alignment_output/ResultDB.tsv -o test/unique_output
 ```
