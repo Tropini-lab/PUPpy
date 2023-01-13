@@ -22,7 +22,7 @@ PUPpy takes any number of bacterial CDS files as input. CDS files must be genera
 
 # Installation
 
-## Install with bioconda
+### Install with bioconda
 
 PUPpy and its dependencies can be installed with conda and used on Mac and Linux.
 
@@ -32,7 +32,7 @@ conda install puppy
 
 Installing thorugh conda ensures that all the scripts from the PUPpy distribution are available on ```$PATH```
 
-## Dependencies
+### Dependencies
 
 Alternatively, you can create the required Conda environment from this GitHub directory.
 
