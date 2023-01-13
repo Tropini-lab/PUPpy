@@ -27,10 +27,10 @@ PUPpy takes any number of bacterial CDS files as input. CDS files must be genera
 PUPpy and its dependencies can be installed with conda and used on Mac and Linux.
 
 ```sh 
-<ADD CODE HERE>
+conda install puppy
 ```
 
-Installing thorugh conda ensures that all the scripts from the PUPpy distribution are available on ```sh $PATH```
+Installing thorugh conda ensures that all the scripts from the PUPpy distribution are available on ```$PATH```
 
 ## Dependencies
 
