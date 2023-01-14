@@ -34,69 +34,33 @@ Installing thorugh conda ensures that all the scripts from the PUPpy distributio
 
 ### Dependencies
 
-Alternatively, you can create the required Conda environment from this GitHub directory.
+You can also set up the conda environment to run PUPpy using the YAML definition found in this repository:
 
 ```sh
-# Deactivate Conda environment
-conda deactivate
-
 # Clone PUPpy GitHub directory
 git clone https://github.com/Tropini-lab/PUPpy_pipeline.git
 
 # Create conda environment
 cd PUPpy_pipeline
-conda env create -f PUPpy_environment.yml
+
+# Set up conda environment
+conda deactivate
+conda env create -n puppy -f PUPpy_environment.yml
 conda activate PUPpy
 ```
 
-Alternatively, you can manually set up a conda environment with the individual dependencies:
+Or by manually installing dependencies:
 
-```sh
-# 1) Create a Conda environment
-conda create -n PUPpy_pipeline python=3.10.6
+- [MMseqs2](https://github.com/soedinglab/MMseqs2)
+- [Pandas](https://github.com/pandas-dev/pandas) >=1.5
+- [BioPython](https://github.com/biopython/biopython)
+- [Dask](https://github.com/dask/dask)
+- [r-tidyverse](https://github.com/conda-forge/r-tidyverse-feedstock)
+- [r-readr](https://github.com/tidyverse/readr)
+- [r-stringi](https://github.com/gagolews/stringi)
+- [primer3-py](https://libnano.github.io/primer3-py/quickstart.html#installation)
+- [colorama](https://github.com/tartley/colorama)
 
-# 2) Activate the Conda environment
-conda activate PUPpy_pipeline
-
-# 3) Configure Conda channels
-conda config --add channels conda-forge
-conda config --add channels defaults
-conda config --add channels r
-conda config --add channels bioconda
-
-# 4) Install dependencies:
-# Conda
-## MMseqs2 v14.7e284
-conda install -c "bioconda/label/cf201901" mmseqs2
-## Pandas 1.5
-conda install pandas=1.5
-## BioPython v1.80
-conda install -c "conda-forge/label/cf201901" biopython
-## Dask v0.15.2
-conda install -c "conda-forge/label/cf201901" dask
-## R tidyverse v1.3.1
-conda install -c r r-tidyverse
-## R readr v2.1.3
-conda install -c "conda-forge/label/cf201901" r-readr
-## R stringi v1.7.8
-conda install -c "conda-forge/label/cf201901" r-stringi
-# Pip
-## primer3-py 0.6.1
-pip install primer3-py
-## colorama 0.4.6
-pip install colorama
-## psutil 5.9.4
-pip install psutil
-```
-
-If you cannot use Conda, you can clone this repository and run the scripts directly
-
-```sh
-# Clone repository
-git clone https://github.com/Tropini-lab/PUPpy_pipeline.git
-# Move to directory with PUPpy scripts
-cd PUPpy_pipeline/scripts
-```
 
 # Simple usage
 
@@ -105,12 +69,12 @@ PUPpy consists of 2 main steps: 1) aligning the input genes and 2) designing tax
 The alignment step must always be run for any new defined bacterial community:
 
 ```python
-python alignments.py -c test/input -o test/alignment_output
+puppy-align -c test/input -o test/alignment_output
 ```
 
 The second step is where users choose whether to design taxon-specific primers unique to individual members or shared by groups of the bacterial community.
 This step can be run multiple times changing the target species, or primer-design parameters, while keeping the same input)alignments.tsv generated in step 1.
 
 ```python
-python primerDesign.py -t test/input -i test/alignment_output/ResultDB.tsv -o test/unique_output
+puppy-primers -t test/input -i test/alignment_output/ResultDB.tsv -o test/unique_output
 ```
