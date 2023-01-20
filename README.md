@@ -11,7 +11,7 @@
 		- [Shell completion](#shell-completion)
 	- [Usage](#usage)
 	- [Calculation methods](#calculation-methods)
-	- [License]
+	- [License](#license)
 
 
 # PUPpy
