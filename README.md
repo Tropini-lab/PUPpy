@@ -90,3 +90,9 @@ This step can be run multiple times changing the target species, or primer-desig
 ```python
 puppy-primers -t test/input -i test/alignment_output/ResultDB.tsv -o test/unique_output
 ```
+
+## License
+
+PUPpy is made available under GPLv3. See LICENSE for details. Copyright Carolina Tropini.
+
+Developed by Hans Ghezzi at University of British Columbia (UBC).
