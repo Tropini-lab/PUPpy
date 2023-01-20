@@ -11,6 +11,8 @@
 		- [Shell completion](#shell-completion)
 	- [Usage](#usage)
 	- [Input](#input)
+	- [Contributors](#contributors)
+	- [Citation](#citation)
 	- [License](#license)
 
 
