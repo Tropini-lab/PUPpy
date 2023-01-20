@@ -84,7 +84,7 @@ PUPpy operates in 2 main steps:
 
 Detailed usage information, including all the primer design parameters, can be seen by running ```-h``` or ```--help``` at each step.
 
-
+### 1. Alignments
 The alignment step must always be run for any new defined bacterial community:
 
 ```python
