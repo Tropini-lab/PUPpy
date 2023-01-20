@@ -77,7 +77,13 @@ PUPpy takes any number of bacterial CDS files as input. Input CDS files are alig
 
 # Usage
 
-PUPpy consists of 2 main steps: 1) aligning the input genes and 2) designing taxon-specific primers.
+PUPpy operates in 2 main steps: 
+
+1) ```puppy-align``` - performs local pairwise alignment of all the input CDS genes against each other, and 
+2) ```puppy-primers``` - designs taxon-specific primers based on user-determined parameters.
+
+Detailed usage information, including all the primer design parameters, can be seen by running ```-h``` or ```--help``` at each step.
+
 
 The alignment step must always be run for any new defined bacterial community:
 
@@ -93,7 +99,7 @@ puppy-primers -t test/input -i test/alignment_output/ResultDB.tsv -o test/unique
 ```
 ## Input
 
-Currently, PUPpy supports CDS files generated from any of these 3 approaches: [prokka](https://github.com/tseemann/prokka), [RAST](https://rast.nmpdr.org/) and/or [NCBI](https://www.ncbi.nlm.nih.gov/assembly).
+Currently, PUPpy supports CDS files generated from any of these 3 approaches: [prokka](https://github.com/tseemann/prokka), [RAST](https://rast.nmpdr.org/) and/or downloaded from the [NCBI](https://www.ncbi.nlm.nih.gov/assembly).
 
 ## Contributors
 
