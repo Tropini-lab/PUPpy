@@ -104,13 +104,14 @@ puppy-primers -t test/input -i test/alignment_output/ResultDB.tsv -o test/unique
 By default, ```puppy-primers``` outputs **unique** primers. To design **group** primers, add the argument ```-p group``` to the code above.
 
 ```puppy-primers``` **requires** 2 arguments as input:
-- ```t``` or ```--target_species``` - a folder containing the CDS files of the organisms for which you want to design taxon-specific primers. 
+- ```-t``` or ```--target_species``` - a folder containing the CDS files of the organisms for which you want to design taxon-specific primers. 
 
 	- This can either be the same directory used as argument of ```-c``` in ```puppy-align```, or a subset of the ladder.
-- ```i``` or ```--input``` - either the alignment file, ```ResultDB.tsv``` or ```final_genes.tsv``` a file created by running ```puppy-primers``` on **unique** mode.
+- ```-i``` or ```--input``` - either the alignment file, ```ResultDB.tsv``` or ```final_genes.tsv``` a file created by running ```puppy-primers``` on **unique** mode.
 
+You can see the default primer design parameters used by Primer3 by running ```puppy-primers -h```.
 
-This step can be run multiple times changing the target species, or primer-design parameters, while keeping the same input)alignments.tsv generated in step 1.
+```puppy-primers``` can be run multiple times, only changing the target species, or primer-design parameters, while keeping the same input)alignments.tsv generated in step 1.
 
 
 ## Input
