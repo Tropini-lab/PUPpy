@@ -1,3 +1,10 @@
+# Phylogenetically Unique Primers in python (PUPpy)
+
+PUPpy (<ins>**P**</ins>hylogenetically <ins>**U**</ins>nique <ins>**P**</ins>rimers in <ins>**py**</ins>thon) is an automated pipeline to design taxon-specific primers for any defined bacterial community. 
+
+PUPpy can design both strain-specific primers, which selectively amplify each member of the community, and group-specific primers, which selectively amplify user-selected members. Primers designed with the pipeline can be used to assess the presence/absence of bacteria in samples through PCR, as well as quantify their abundance via qPCR, among other uses. 
+
+# Table of contents
 - [PUPpy](#PUPpy)
 	- [Installation](#installation)
 		- [Install through the bioconda package](#install-through-the-bioconda-package)
@@ -11,13 +18,6 @@
 	- [Contributors](#contributors)
 	- [Citation](#citation)
 	- [License](#license)
-
-
-# Phylogenetically Unique Primers in python (PUPpy)
-
-PUPpy (<ins>**P**</ins>hylogenetically <ins>**U**</ins>nique <ins>**P**</ins>rimers in <ins>**py**</ins>thon) is an automated pipeline to design taxon-specific primers for any defined bacterial community. 
-
-PUPpy can design both strain-specific primers, which selectively amplify each member of the community, and group-specific primers, which selectively amplify user-selected members. Primers designed with the pipeline can be used to assess the presence/absence of bacteria in samples through PCR, as well as quantify their abundance via qPCR, among other uses. 
 
 # Overview
 
