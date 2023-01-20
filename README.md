@@ -40,10 +40,10 @@ You can also set up the conda environment to run PUPpy using the YAML definition
 # Clone PUPpy GitHub directory
 git clone https://github.com/Tropini-lab/PUPpy_pipeline.git
 
-# Create conda environment
+# Change directory
 cd PUPpy_pipeline
 
-# Set up conda environment
+# Create and set up conda environment
 conda deactivate
 conda env create -n puppy -f PUPpy_environment.yml
 conda activate PUPpy
