@@ -84,12 +84,16 @@ PUPpy operates in 2 main steps:
 
 Detailed usage information, including all the primer design parameters, can be seen by running ```-h``` or ```--help``` at each step.
 
-### 1. Alignments
-The alignment step must always be run for any new defined bacterial community:
+### 1. Genes alignment
+The alignment step must always be run first for any new defined bacterial community:
 
 ```python
 puppy-align -c test/input -o test/alignment_output
 ```
+
+This command creates an output file, ```test/alignment_output/ResultDB.tsv``` which can be used as input for the primer design command.
+
+### 2. Primer design
 
 The second step is where users choose whether to design taxon-specific primers unique to individual members or shared by groups of the bacterial community.
 This step can be run multiple times changing the target species, or primer-design parameters, while keeping the same input)alignments.tsv generated in step 1.
