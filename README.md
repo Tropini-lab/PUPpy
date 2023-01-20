@@ -95,14 +95,15 @@ This command creates an output file, ```test/alignment_output/ResultDB.tsv``` wh
 
 ### 2. Primer design
 
-The second step consists in designing taxon-specific primers unique to individual members or shared by groups of the bacterial community. By default, ```puppy-primers``` designs **unique** primers. To design **group** primers, add the argument ```-p group``` to the code below.
-
+The second step consists in designing taxon-specific primers unique to individual members or shared by groups of the bacterial community.
 
 ```python
 puppy-primers -t test/input -i test/alignment_output/ResultDB.tsv -o test/unique_output
 ```
 
-This command **requires** 2 arguments as input:
+By default, ```puppy-primers``` outputs **unique** primers. To design **group** primers, add the argument ```-p group``` to the code above.
+
+```puppy-primers``` **requires** 2 arguments as input:
 - ```t``` or ```--target_species``` - a folder containing the CDS files of the organisms for which you want to design taxon-specific primers. 
 
 	- This can either be the same directory used as argument of ```-c``` in ```puppy-align```, or a subset of the ladder.
