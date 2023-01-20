@@ -1,6 +1,18 @@
 # <img src="./man/figures/Tropini_Lab_logo.png" align="right" height="150" /> PUPpy - A pipeline to design taxon-specific primers for any defined bacterial community.
 
-### By: Hans Ghezzi - Tropini Lab
+
+- [PUPpy](#PUPpy)
+	- [Installation](#installation)
+		- [Install through the bioconda package](#install-through-the-bioconda-package)
+		- [Pre-compiled binary](#pre-compiled-binary)
+		- [Compiling from source](#compiling-from-source)
+		- [Development version](#development-version)
+		- [Dependencies](#dependencies)
+		- [Shell completion](#shell-completion)
+	- [Usage](#usage)
+	- [Calculation methods](#calculation-methods)
+	- [License](#license)
+
 
 # PUPpy
 
