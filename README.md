@@ -75,7 +75,7 @@ PUPpy takes any number of bacterial CDS files as input. Input CDS files are alig
 <img src="./images/PUPpy_workflow.png" height="700">  
 
 
-# Simple usage
+# Usage
 
 PUPpy consists of 2 main steps: 1) aligning the input genes and 2) designing taxon-specific primers.
 
