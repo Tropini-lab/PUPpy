@@ -5,23 +5,18 @@ PUPpy (<ins>**P**</ins>hylogenetically <ins>**U**</ins>nique <ins>**P**</ins>rim
 PUPpy can design both strain-specific primers, which selectively amplify each member of the community, and group-specific primers, which selectively amplify user-selected members. Primers designed with the pipeline can be used to assess the presence/absence of bacteria in samples through PCR, as well as quantify their abundance via qPCR, among other uses. 
 
 # Table of contents
-- [PUPpy](#PUPpy)
-	- [Installation](#installation)
-		- [Install through the bioconda package](#install-through-the-bioconda-package)
-		- [Pre-compiled binary](#pre-compiled-binary)
-		- [Compiling from source](#compiling-from-source)
-		- [Development version](#development-version)
-		- [Dependencies](#dependencies)
-		- [Shell completion](#shell-completion)
-	- [Usage](#usage)
-	- [Input](#input)
-	- [Contributors](#contributors)
-	- [Citation](#citation)
-	- [License](#license)
+- [Installation](#installation)
+	- [Install with bioconda](#Install-with-bioconda)
+	- [Dependencies](#Dependencies)
+- [Usage](#usage)
+- [Input](#input)
+- [Contributors](#contributors)
+- [Citation](#citation)
+- [License](#license)
 
 # Overview
 
-PUPpy takes any number of bacterial CDS files as input. CDS files must be generated from one of these 3 programs: Prokka, RAST or downloaded from the NCBI. Input CDS files are aligned using [MMseqs2](https://github.com/soedinglab/MMseqs2) and then parsed to identify candidate unique or group-specific genes within the defined bacterial community provided by the user. Taxon-specific primers are then designed using [Primer3](https://primer3.org/manual.html) and provided as output in an Excel file.
+PUPpy takes any number of bacterial CDS files as input. Input CDS files are aligned using [MMseqs2](https://github.com/soedinglab/MMseqs2) and then parsed to identify candidate unique or group-specific genes within the defined bacterial community provided by the user. Taxon-specific primers are then designed using [Primer3](https://primer3.org/manual.html) and provided as output in an Excel file.
 
 # IMPORTANT:
 
@@ -93,7 +88,7 @@ puppy-primers -t test/input -i test/alignment_output/ResultDB.tsv -o test/unique
 ```
 ## Input
 
-Currently, PUPpy supports CDS files generated from any of these 3 approaches: [PROKKA](https://github.com/tseemann/prokka), [RAST](https://rast.nmpdr.org/) and/or [NCBI](https://www.ncbi.nlm.nih.gov/assembly).
+Currently, PUPpy supports CDS files generated from any of these 3 approaches: [prokka](https://github.com/tseemann/prokka), [RAST](https://rast.nmpdr.org/) and/or [NCBI](https://www.ncbi.nlm.nih.gov/assembly).
 
 ## Contributors
 
@@ -111,5 +106,5 @@ Developed by Hans Ghezzi at University of British Columbia (UBC).
 
 
 ## EXTRAS
-PUPpy can design both strain-specific primers, which selectively amplify each member of the community, and group-specific primers, which selectively amplify user-selected members. Primers designed with the pipeline can be used to assess the presence/absence of bacteria in samples through PCR, as well as quantify their abundance via qPCR. 
 
+CDS files must be generated from one of these 3 programs: Prokka, RAST or downloaded from the NCBI. 
