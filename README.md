@@ -10,7 +10,7 @@
 		- [Dependencies](#dependencies)
 		- [Shell completion](#shell-completion)
 	- [Usage](#usage)
-	- [Calculation methods](#calculation-methods)
+	- [Input](#input)
 	- [License](#license)
 
 
