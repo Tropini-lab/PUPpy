@@ -96,6 +96,14 @@ puppy-primers -t test/input -i test/alignment_output/ResultDB.tsv -o test/unique
 
 Currently, PUPpy supports CDS files generated from any of these 3 approaches: [PROKKA](https://github.com/tseemann/prokka), [RAST](https://rast.nmpdr.org/) and/or [NCBI](https://www.ncbi.nlm.nih.gov/assembly).
 
+## Contributors
+
+- Juan Camilo Burckhardt - [@jburckhardt](
+
+## Citation
+
+If you use PUPpy in your research, please cite the original paper:
+
 ## License
 
 PUPpy is made available under GPLv3. See LICENSE for details. Copyright Carolina Tropini.
