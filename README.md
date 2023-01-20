@@ -95,12 +95,23 @@ This command creates an output file, ```test/alignment_output/ResultDB.tsv``` wh
 
 ### 2. Primer design
 
-The second step is where users choose whether to design taxon-specific primers unique to individual members or shared by groups of the bacterial community.
-This step can be run multiple times changing the target species, or primer-design parameters, while keeping the same input)alignments.tsv generated in step 1.
+The second step consists in designing taxon-specific primers unique to individual members or shared by groups of the bacterial community. By default, ```puppy-primers``` designs **unique** primers. To design **group** primers, add the argument ```-p group``` to the code below.
+
 
 ```python
 puppy-primers -t test/input -i test/alignment_output/ResultDB.tsv -o test/unique_output
 ```
+
+This command **requires** 2 arguments as input:
+- ```t``` or ```--target_species``` - a folder containing the CDS files of the organisms for which you want to design taxon-specific primers. 
+
+	- This can either be the same directory used as argument of ```-c``` in ```puppy-align```, or a subset of the ladder.
+- ```i``` or ```--input``` - either the alignment file, ```ResultDB.tsv``` or ```final_genes.tsv``` a file created by running ```puppy-primers``` on **unique** mode.
+
+
+This step can be run multiple times changing the target species, or primer-design parameters, while keeping the same input)alignments.tsv generated in step 1.
+
+
 ## Input
 
 Currently, PUPpy supports CDS files generated from any of these 3 approaches: [prokka](https://github.com/tseemann/prokka), [RAST](https://rast.nmpdr.org/) and/or downloaded from the [NCBI](https://www.ncbi.nlm.nih.gov/assembly).
