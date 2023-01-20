@@ -98,7 +98,7 @@ Currently, PUPpy supports CDS files generated from any of these 3 approaches: [P
 
 ## Contributors
 
-- Juan Camilo Burckhardt - [@jburckhardt](
+- Juan Camilo Burckhardt
 
 ## Citation
 
