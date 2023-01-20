@@ -16,23 +16,10 @@ PUPpy can design both strain-specific primers, which selectively amplify each me
 - [Citation](#citation)
 - [License](#license)
 
-# Overview
-
-PUPpy takes any number of bacterial CDS files as input. Input CDS files are aligned using [MMseqs2](https://github.com/soedinglab/MMseqs2) and then parsed to identify candidate unique or group-specific genes within the defined bacterial community provided by the user. Taxon-specific primers are then designed using [Primer3](https://primer3.org/manual.html) and provided as output in an Excel file.
-
-# IMPORTANT:
-
-1) **PUPpy was developed to design taxon-specific primers in a DEFINED bacterial community.** 
-
-   While in limiting cases it may be possible to use these primers in undefined communities, this cannot be ensured through this pipeline
-  
-2) **Primers should always be tested *in vitro* prior to use.**
-   
-   PCR can be a mistery, and while primers may look perfect *in silico*, we strongly encourage testing their specifity *in vitro* prior to use.
 
 # Installation
 
-### Install with bioconda
+## Install with bioconda
 
 PUPpy and its dependencies can be installed with conda and used on Mac and Linux.
 
@@ -42,7 +29,7 @@ conda install -c bioconda puppy
 
 Installing thorugh conda ensures that all the scripts from the PUPpy distribution are available on ```$PATH```
 
-### Dependencies
+## Dependencies
 
 You can also set up the conda environment to run PUPpy using the YAML definition found in this repository:
 
@@ -71,6 +58,19 @@ Or by manually installing dependencies:
 - [primer3-py](https://libnano.github.io/primer3-py/quickstart.html#installation)
 - [colorama](https://github.com/tartley/colorama)
 
+# Important: before you start
+
+1) **PUPpy was developed to design taxon-specific primers in DEFINED bacterial communities.** 
+
+   While in limiting cases it may be possible to use PUPpy-designed primers in undefined communities, specificity cannot be ensured *in silico* with PUPpy.
+  
+2) **Primers should always be tested *in vitro* prior to use.**
+   
+   PCR can be misterious, and while primers may look perfect *in silico*, we strongly encourage confirming their specifity *in vitro* prior to use.
+
+# How it works
+
+PUPpy takes any number of bacterial CDS files as input. Input CDS files are aligned using [MMseqs2](https://github.com/soedinglab/MMseqs2) and then parsed to identify candidate unique or group-specific genes within the defined bacterial community provided by the user. Taxon-specific primers are then designed using [Primer3](https://primer3.org/manual.html) and provided as output in an Excel file.
 
 # Simple usage
 
