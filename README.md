@@ -6,8 +6,10 @@ PUPpy can design both strain-specific primers, which selectively amplify each me
 
 # Table of contents
 - [Installation](#installation)
-	- [Install with bioconda](#Install-with-bioconda)
+	- [Install with bioconda](#install-with-bioconda)
 	- [Dependencies](#Dependencies)
+- [Important: before you start](#important:-before-you-start)
+- [How it works](#how-it-works)
 - [Usage](#usage)
 - [Input](#input)
 - [Contributors](#contributors)
