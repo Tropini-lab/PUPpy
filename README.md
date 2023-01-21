@@ -14,6 +14,7 @@ Primers designed with the pipeline can be used to assess the presence/absence of
 - [How it works](#how-it-works)
 - [Usage](#usage)
 - [Input](#input)
+- [Output](#output)
 - [Contributors](#contributors)
 - [Citation](#citation)
 - [License](#license)
