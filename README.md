@@ -185,7 +185,7 @@ Examples of these outputs can be seen in this repository at ```./test/unique_out
 	- Only a portion of the candidate gene (i.e. <100% query coverage) aligns to at least one target gene;
 	- The candidate gene aligns does not align to the entire sequence of at least one target gene.
 
--```UndesiredGroupGenes.tsv``` - List of genes that will not be considered by PUPpy, as they would not yield group-specific primers. Undesired genes must meet the following requirements:
+- ```UndesiredGroupGenes.tsv``` - List of genes that will not be considered by PUPpy, as they would not yield group-specific primers. Undesired genes must meet the following requirements:
 
 	- The candidate gene has more than 1 alignment to at least one intended target and it does not amplify all targets OR it does not amplify any intended targets;
 	- The candidate gene amplifies unintended species in the defined community;
