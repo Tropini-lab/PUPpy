@@ -103,6 +103,7 @@ The second step consists in designing taxon-specific primers unique to individua
 puppy-primers -t test/input -i test/alignment_output/ResultDB.tsv -o test/unique_output
 ```
 
+
 By default, ```puppy-primers``` outputs **unique** primers. To design **group** primers, add the argument ```-p group``` to the code above.
 
 ```puppy-primers``` **requires** 2 arguments as input:
@@ -116,8 +117,7 @@ By default, ```puppy-primers``` outputs **unique** primers. To design **group** 
 
 You can see the default primer design parameters used by Primer3 by running ```puppy-primers -h```.
 
-```puppy-primers``` can be run multiple times, only changing the target species, or primer-design parameters, while keeping the same input)alignments.tsv generated in step 1.
-
+While it is not necessary to run ```puppy-align``` more than once on the same defined community, ```puppy-primers``` can be run multiple times, for example to create primer pairs with different parameters.
 
 ## Input
 
