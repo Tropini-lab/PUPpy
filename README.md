@@ -99,7 +99,7 @@ This command creates an output file, ```test/alignment_output/ResultDB.tsv``` wh
 
 The second step consists in designing taxon-specific primers unique to individual members or shared by groups of the bacterial community.
 
-```python
+```
 puppy-primers -t test/input -i test/alignment_output/ResultDB.tsv -o test/unique_output
 ```
 
