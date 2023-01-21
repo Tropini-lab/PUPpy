@@ -124,12 +124,32 @@ Currently, PUPpy supports CDS files generated from any of these 3 approaches: [p
 
 Example of accepted FASTA headers are shown here:
 ```
+# CDS file downloaded from the NCBI
+>lcl|NC_004663.1_cds_WP_011107050.1_1 [locus_tag=BT_RS00005] [db_xref=GeneID:1075082] [protein=hypothetical protein] [protein_id=WP_011107050.1] [location=93..710] [gbkey=CDS]
+
+# CDS file from prokka
+>COAIMFFE_00001 putative protein
+
+# CDS file from RAST
+>fig|6666666.855680.peg.1
 ```
 
+Moreover, input CDS filenames must meet the following 3 requirements to be used by PUPpy:
 
-Moreover, input CDS files must meet the following 3 requirements to be used by PUPpy:
+1) Filename must start with a unique identifier that allows you to distinguish organisms.
 
-1) 
+	- e.g. ```Bacteroides_theta_VPI5482```
+
+2) Filename must contain the string cds.
+
+	- e.g. ```cds```, ```cds_from_genomic``` or ```cds_genomic```
+
+3) Filename must end with the extension ```.fna```
+
+Examples of accepted CDS filenames:
+- ```B_theta_VPI5482_cds.fna```
+- ```Bacteroides_thetaiotaomicron_VPI_5482_cds_from_genomic.fna```
+
 
 ## Contributors
 
