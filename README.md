@@ -195,9 +195,14 @@ Examples of these outputs can be seen in this repository at ```./test/unique_out
 
 Examples of these outputs can be seen in this repository at ```./test/group_output/```
 
+## Feedback
+
+
 ## Contributors
 
 - Juan Camilo Burckhardt
+- Michelle Fan
+- Katharine Michelle Ng
 
 ## Citation
 
