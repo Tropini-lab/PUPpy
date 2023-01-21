@@ -170,11 +170,27 @@ Examples of these outputs can be seen in this repository at ```./test/unique_out
 - ```primer3_files/``` - folder containing the individual primer3 outputs of the primers in ```UniquePrimerTable.tsv```
 - ```IdealGroupGenes.tsv``` - List of most ideal candidate genes used by PUPpy to design group-specific primers. Ideal genes must meet the following requirements:
 
-	- s
+	- The candidate gene has exactly 1 alignment to each intended target.
+	- The candidate gene only amplifies intended species in the defined community.
+	- The candidate gene aligns perfectly (100% ID) to each target gene.
+	- The entire length of the candidate gene (i.e. 100% query coverage) aligns to each target gene.
+	- The candidate gene aligns to the entire sequence of each target gene (i.e. 100% target coverage).
+
 - ```SecondChoiceGroupGenes.tsv``` - List of not-ideal genes that will be used by PUPpy to design group-specific primers only if no ideal genes are found. "Second choice" genes must meet the following requirements:
 
-	-s
--```UndesiredGroupGenes.tsv``` - List of genes that will not be considered by PUPpy, as they would not yield group-specific primers.
+	- The candidate gene has more than 1 alignment to at least one intended target.
+	- The candidate gene only amplifies intended species in the defined community.
+	- The candidate gene does not align perfectly to at least one target gene.
+	- Only a portion of the candidate gene (i.e. <100% query coverage) aligns to at least one target gene.
+	- The candidate gene aligns does not align to the entire sequence of at least one target gene.
+
+-```UndesiredGroupGenes.tsv``` - List of genes that will not be considered by PUPpy, as they would not yield group-specific primers. Undesired genes must meet the following requirements:
+
+	- The candidate gene has more than 1 alignment to at least one intended target and it does not amplify all targets OR it does not amplify any intended targets
+	- The candidate gene amplifies unintended species in the defined community.
+	- The candidate gene not align perfectly to at least one target gene.
+	- Only a portion of the candidate gene (i.e. <100% query coverage) aligns to at least one target gene.
+	- The candidate gene aligns does not align to the entire sequence of at least one target gene.
 
 Examples of these outputs can be seen in this repository at ```./test/group_output/```
 
