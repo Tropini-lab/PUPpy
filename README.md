@@ -103,7 +103,6 @@ The second step consists in designing taxon-specific primers unique to individua
 puppy-primers -t test/input -i test/alignment_output/ResultDB.tsv -o test/unique_output
 ```
 
-
 By default, ```puppy-primers``` outputs **unique** primers. To design **group** primers, add the argument ```-p group``` to the code above.
 
 ```puppy-primers``` **requires** 2 arguments as input:
