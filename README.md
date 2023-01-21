@@ -150,6 +150,21 @@ Examples of accepted CDS filenames:
 - ```B_theta_VPI5482_cds.fna```
 - ```Bacteroides_thetaiotaomicron_VPI_5482_cds_from_genomic.fna```
 
+## Output
+
+The key output of ```puppy-align``` is the file ```ResultDB.tsv```, which stores exhaustive information about all the local pairwise alignments. To see an example of this output file, go to: ```./test/alignment_output/ResultDB.tsv``` in this repository. 
+
+The outputs of ```puppy-primers``` vary depending on which mode is run:
+
+**Unique** mode:
+- ```Stats_pipelineOutput.tsv``` - table containing the number of unique genes found and total number of genes for each community member.
+- ```UniqueGenesPlot.pdf``` - barplot showing the number of unique genes found for each community member.
+- ```final_genes.tsv``` - list of unique genes found for each member
+- **```UniquePrimerTable.tsv```** - output table with the taxon-specific primers designed and their respective parameters
+- ```primer3_files/``` - folder containing the individual primer3 outputs of the primers in ```UniquePrimerTable.tsv```
+
+Examples of these outputs can be seen in this repository at ```./test/unique_output/```
+
 
 ## Contributors
 
