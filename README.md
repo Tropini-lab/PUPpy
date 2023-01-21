@@ -170,10 +170,10 @@ Examples of these outputs can be seen in this repository at ```./test/unique_out
 - ```primer3_files/``` - folder containing the individual primer3 outputs of the primers in ```UniquePrimerTable.tsv```
 - ```IdealGroupGenes.tsv``` - List of most ideal candidate genes used by PUPpy to design group-specific primers. Ideal genes must meet the following requirements:
 
-	- 
+	- s
 - ```SecondChoiceGroupGenes.tsv``` - List of not-ideal genes that will be used by PUPpy to design group-specific primers only if no ideal genes are found. "Second choice" genes must meet the following requirements:
 
-	-
+	-s
 -```UndesiredGroupGenes.tsv``` - List of genes that will not be considered by PUPpy, as they would not yield group-specific primers.
 
 Examples of these outputs can be seen in this repository at ```./test/group_output/```
