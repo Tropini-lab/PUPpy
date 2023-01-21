@@ -111,7 +111,8 @@ By default, ```puppy-primers``` outputs **unique** primers. To design **group** 
 	- This can either be the same directory used as argument of ```-c``` in ```puppy-align```, or a subset of the ladder.
 - ```-i``` or ```--input``` - either the alignment file, ```ResultDB.tsv``` or ```final_genes.tsv``` 
 
-	- ```final_genes.tsv``` is a file created by running ```puppy-primers``` on **unique** mode, containing the list of unique genes found for the organisms listed in ```--target_species```. This is a shortcut if you need to run ```puppy-primers``` multiple times on the same community, but it is not necessary.
+	- ```final_genes.tsv``` is a file created by running ```puppy-primers``` on **unique** mode, containing the list of unique genes found for the organisms listed in ```--target_species```. 
+	- This is a shortcut if you need to run ```puppy-primers``` multiple times on the same community and it provides the same output as using ```ResultDB.tsv```. The only difference is that you can only use ```final_genes.tsv``` after having run ```puppy-primers``` at least once before, while ```ResultDB.tsv``` can be used straight after ```puppy-align```.
 
 You can see the default primer design parameters used by Primer3 by running ```puppy-primers -h```.
 
