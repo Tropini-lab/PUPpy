@@ -116,11 +116,20 @@ By default, ```puppy-primers``` outputs **unique** primers. To design **group** 
 
 You can see the default primer design parameters used by Primer3 by running ```puppy-primers -h```.
 
-While it is not necessary to run ```puppy-align``` more than once on the same defined community, ```puppy-primers``` can be run multiple times, for example to create primer pairs with different parameters.
+While we recommend **not to** run ```puppy-align``` more than once on the same defined community, ```puppy-primers``` can be run multiple times, for example to create primer pairs with different parameters.
 
 ## Input
 
-Currently, PUPpy supports CDS files generated from any of these 3 approaches: [prokka](https://github.com/tseemann/prokka), [RAST](https://rast.nmpdr.org/) and/or downloaded from the [NCBI](https://www.ncbi.nlm.nih.gov/assembly).
+Currently, PUPpy supports CDS files generated from any of these 3 approaches: [prokka](https://github.com/tseemann/prokka), [RAST](https://rast.nmpdr.org/) and/or downloaded from the [NCBI](https://www.ncbi.nlm.nih.gov/assembly). This is important because PUPpy will only recognise FASTA headers from these 3 programs.
+
+Example of accepted FASTA headers are shown here:
+```
+```
+
+
+Moreover, input CDS files must meet the following 3 requirements to be used by PUPpy:
+
+1) 
 
 ## Contributors
 
