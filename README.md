@@ -121,31 +121,31 @@ While we recommend **not to** run ```puppy-align``` more than once on the same d
 
 ## Input
 
-Currently, PUPpy supports CDS files generated from any of these 3 approaches: [prokka](https://github.com/tseemann/prokka), [RAST](https://rast.nmpdr.org/) and/or downloaded from the [NCBI](https://www.ncbi.nlm.nih.gov/assembly). This is important because PUPpy will only recognise FASTA headers from these 3 programs.
+Currently, PUPpy supports CDS files generated from any of these 3 approaches: [prokka](https://github.com/tseemann/prokka), [RAST](https://rast.nmpdr.org/) and/or downloaded from the [NCBI](https://www.ncbi.nlm.nih.gov/assembly). This is necessary because PUPpy only recognises FASTA headers from these 3 programs.
 
-Example of accepted FASTA headers are shown here:
+Examples of accepted FASTA headers are shown here:
 ```
-# CDS file downloaded from the NCBI
+# CDS file downloaded from the NCBI:
 >lcl|NC_004663.1_cds_WP_011107050.1_1 [locus_tag=BT_RS00005] [db_xref=GeneID:1075082] [protein=hypothetical protein] [protein_id=WP_011107050.1] [location=93..710] [gbkey=CDS]
 
-# CDS file from prokka
+# CDS file from prokka:
 >COAIMFFE_00001 putative protein
 
-# CDS file from RAST
+# CDS file from RAST:
 >fig|6666666.855680.peg.1
 ```
 
 Moreover, input CDS filenames must meet the following 3 requirements to be used by PUPpy:
 
-1) Filename must start with a unique identifier that allows you to distinguish organisms.
+1) Filename must **start** with a unique identifier that allows you to distinguish organisms in the defined community.
 
 	- e.g. ```Bacteroides_theta_VPI5482```
 
-2) Filename must contain the string cds.
+2) Filename must **contain** the string cds.
 
 	- e.g. ```cds```, ```cds_from_genomic``` or ```cds_genomic```
 
-3) Filename must end with the extension ```.fna```
+3) Filename must **end** with the extension ```.fna```
 
 Examples of accepted CDS filenames:
 - ```B_theta_VPI5482_cds.fna```
@@ -195,14 +195,11 @@ Examples of these outputs can be seen in this repository at ```./test/unique_out
 
 Examples of these outputs can be seen in this repository at ```./test/group_output/```
 
-## Feedback
-
-
 ## Contributors
 
+- Katharine Michelle Ng
 - Juan Camilo Burckhardt
 - Michelle Fan
-- Katharine Michelle Ng
 
 ## Citation
 
@@ -213,8 +210,3 @@ If you use PUPpy in your research, please cite the original paper:
 PUPpy is made available under GPLv3. See LICENSE for details. Copyright Carolina Tropini.
 
 Developed by Hans Ghezzi at University of British Columbia (UBC).
-
-
-## EXTRAS
-
-CDS files must be generated from one of these 3 programs: Prokka, RAST or downloaded from the NCBI. 
