@@ -13,6 +13,7 @@ Primers designed with the pipeline can be used to assess the presence/absence of
 - [Important: before you start](#important-before-you-start)
 - [How it works](#how-it-works)
 - [Usage](#usage)
+- [Command line options](#command-line-options)
 - [Input](#input)
 - [Output](#output)
 - [Contributors](#contributors)
@@ -118,6 +119,36 @@ By default, ```puppy-primers``` outputs **unique** primers. To design **group** 
 You can see the default primer design parameters used by Primer3 by running ```puppy-primers -h```.
 
 While we recommend **not to** run ```puppy-align``` more than once on the same defined community, ```puppy-primers``` can be run multiple times, for example to create primer pairs with different parameters.
+
+## Command line options
+Command line options for **```puppy-align```**
+```
+--CDS_folder [X]		Directory with input CDS files of the defined microbial community (default '')
+--outdir [X]			Output directory (default 'Align_OUT')
+--identity [X]			Identity thresholds to report sequence alignments by MMseqs2 (default '0.3')
+```
+
+Command line options for **```puppy-primers```**
+```
+--primers_type [X]		Design unique or shared primers among the target bacterial group (default 'unique')
+--target_species [X]		Directory containing the CDS files for the species to design taxon-specific primers (default '')
+--input [X]			Input file to generate primers. Either 'ResultDB.tsv' OR 'final_genes.tsv' file must be provided (default '')
+--outdir [X]			Relative path to the output folder (default 'Primer3_output')
+--genes_number [X]		Number of genes per species to design primers (default '5')
+--primers_number [X]		Number of primer pairs to design for each gene (default '4')
+--optimal_primer_size [X]	Primer optimal size (default '20')
+--min_primer_size [X]		Primer minimum size (default '18')
+--max_primer_size [X]		Primer maximum size (default '22')
+--optimal_primer_Tm [X]		Primer optimal melting temperature (default '60.0')
+--min_primer_Tm [X]		Primer minimum melting temperature (default '58.0')
+--max_primer_Tm [X]		Primer maximum melting temperature (default '63.0')
+--max_Tm_diff [X]		Maximum Tm difference between the primer pair (default '2.0')
+--min_primer_gc [X]		Primer minimum GC content (default '40.0')
+--max_primer_gc [X]		Primer maximum GC content (default '60.0')
+--product_size_range [X]	Product size range (default '75 150')
+--max_poly_x [X]		Maximum poly X allowed (default '3')
+--GC_clamp [X]			Primer GC clamp (default '1')
+```
 
 ## Input
 
