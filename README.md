@@ -142,7 +142,7 @@ Primer3 parameters:
   --optimal_primer_size [X]	Primer optimal size (default '20')
   --min_primer_size [X]		Primer minimum size (default '18')
   --max_primer_size [X]		Primer maximum size (default '22')
-  --optimal_primer_Tm [X]		Primer optimal melting temperature (default '60.0')
+  --optimal_primer_Tm [X]	Primer optimal melting temperature (default '60.0')
   --min_primer_Tm [X]		Primer minimum melting temperature (default '58.0')
   --max_primer_Tm [X]		Primer maximum melting temperature (default '63.0')
   --max_Tm_diff [X]		Maximum Tm difference between the primer pair (default '2.0')
@@ -150,7 +150,7 @@ Primer3 parameters:
   --max_primer_gc [X]		Primer maximum GC content (default '60.0')
   --product_size_range [X]	Product size range (default '75 150')
   --max_poly_x [X]		Maximum poly X allowed (default '3')
-  --GC_clamp [X]			Primer GC clamp (default '1')
+  --GC_clamp [X]		Primer GC clamp (default '1')
 ```
 
 ## Input
