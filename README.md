@@ -204,7 +204,7 @@ Examples of these outputs can be seen in this repository at ```./test/unique_out
 
 **Group** mode:
 - **```GroupPrimerTable.tsv```** - output table with the taxon-specific primers designed and their respective parameters
-- ```primer3_files/``` - folder containing the individual primer3 outputs of the primers in ```UniquePrimerTable.tsv```
+- ```primer3_files/``` - folder containing the individual primer3 outputs of the primers in ```GroupPrimerTable.tsv```
 - ```IdealGroupGenes.tsv``` - List of most ideal candidate genes used by PUPpy to design group-specific primers. Ideal genes must meet the following requirements:
 
 	- The candidate gene has exactly 1 alignment to each intended target;
