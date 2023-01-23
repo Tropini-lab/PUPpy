@@ -123,6 +123,7 @@ While we recommend **not to** run ```puppy-align``` more than once on the same d
 ## Command line options
 Command line options for **```puppy-align```**
 ```
+General:
 --CDS_folder [X]		Directory with input CDS files of the defined microbial community (default '')
 --outdir [X]			Output directory (default 'Align_OUT')
 --identity [X]			Identity thresholds to report sequence alignments by MMseqs2 (default '0.3')
@@ -130,10 +131,12 @@ Command line options for **```puppy-align```**
 
 Command line options for **```puppy-primers```**
 ```
+General:
 --primers_type [X]		Design unique or shared primers among the target bacterial group (default 'unique')
 --target_species [X]		Directory containing the CDS files for the species to design taxon-specific primers (default '')
 --input [X]			Input file to generate primers. Either 'ResultDB.tsv' OR 'final_genes.tsv' file must be provided (default '')
 --outdir [X]			Relative path to the output folder (default 'Primer3_output')
+Primer3 parameters:
 --genes_number [X]		Number of genes per species to design primers (default '5')
 --primers_number [X]		Number of primer pairs to design for each gene (default '4')
 --optimal_primer_size [X]	Primer optimal size (default '20')
