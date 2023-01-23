@@ -6,7 +6,7 @@ PUPpy can design both strain-specific primers, which selectively amplify each me
 
 Primers designed with the pipeline can be used to assess the presence/absence of bacteria in samples through PCR, as well as quantify their abundance via qPCR, among other uses. 
 
-<img src="./images/PUPpy_groupUnique_primers-schematic.png"> 
+<img src="./images/PUPpy_groupUnique_primers-schematic.png" width="600"> 
 
 # Table of contents
 - [Installation](#installation)
