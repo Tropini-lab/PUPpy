@@ -126,8 +126,8 @@ While we recommend **not to** run ```puppy-align``` more than once on the same d
 Command line options for **```puppy-align```**
 ```
 General:
---CDSdir [X]			Directory with input CDS files of the defined microbial community (default '')
---outdir [X]			Output directory (default 'Align_OUT')
+  --CDSdir [X]			Directory with input CDS files of the defined microbial community (default '')
+  --outdir [X]			Output directory (default 'Align_OUT')
 --identity [X]			Identity thresholds to report sequence alignments by MMseqs2 (default '0.3')
 ```
 
