@@ -44,7 +44,7 @@ You can also set up the conda environment to run PUPpy using the YAML definition
 git clone https://github.com/Tropini-lab/PUPpy.git
 
 # Change directory
-cd PUPpy_pipeline
+cd PUPpy
 
 # Create and set up conda environment
 conda deactivate
