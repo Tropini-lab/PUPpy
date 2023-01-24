@@ -128,7 +128,7 @@ Command line options for **```puppy-align```**
 General:
   --CDSdir [X]			Directory with input CDS files of the defined microbial community (default '')
   --outdir [X]			Output directory (default 'Align_OUT')
---identity [X]			Identity thresholds to report sequence alignments by MMseqs2 (default '0.3')
+  --identity [X]		Identity thresholds to report sequence alignments by MMseqs2 (default '0.3')
 ```
 
 Command line options for **```puppy-primers```**
