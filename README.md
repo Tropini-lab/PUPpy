@@ -237,7 +237,7 @@ Examples of these outputs can be seen in this repository at ```./test/group_outp
 
 - Katharine Michelle Ng
 - Juan Camilo Burckhardt
-- Michelle Fan
+- Yiyun Michelle Fan
 
 ## Citation
 
