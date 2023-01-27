@@ -113,10 +113,10 @@ By default, ```puppy-primers``` outputs **unique** primers. To design **group** 
 - ```-t``` or ```--target_species``` - a folder containing the CDS files of the organisms for which you want to design taxon-specific primers. 
 
 	- This can either be the same directory used as argument of ```-c``` in ```puppy-align```, or a subset of the ladder.
-- ```-i``` or ```--input``` - either the alignment file, ```ResultDB.tsv``` or ```final_genes.tsv``` 
+- ```-i``` or ```--input``` - either the alignment file, ```ResultDB.tsv``` or ```UniqueGenesList.tsv``` 
 
-	- ```final_genes.tsv``` is a file created by running ```puppy-primers``` on **unique** mode, containing the list of unique genes found for the organisms listed in ```--target_species```. 
-	- This is a shortcut if you need to run ```puppy-primers``` multiple times on the same community and it provides the same output as using ```ResultDB.tsv```. The only difference is that you can only use ```final_genes.tsv``` after having run ```puppy-primers``` at least once before, while ```ResultDB.tsv``` can be used straight after ```puppy-align```.
+	- ```UniqueGenesList.tsv``` is a file created by running ```puppy-primers``` on **unique** mode, containing the list of unique genes found for the organisms listed in ```--target_species```. 
+	- This is a shortcut if you need to run ```puppy-primers``` multiple times on the same community and it provides the same output as using ```ResultDB.tsv```. The only difference is that you can only use ```UniqueGenesList.tsv``` after having run ```puppy-primers``` at least once before, while ```ResultDB.tsv``` can be used straight after ```puppy-align```.
 
 You can see the default primer design parameters used by Primer3 by running ```puppy-primers -h```.
 
@@ -138,7 +138,7 @@ General:
   --help			This help
   --primers_type [X]		Design unique or shared primers among the target bacterial group (default 'unique')
   --target_species [X]		Directory containing the CDS files for the species to design taxon-specific primers (default '')
-  --input [X]			Input file to generate primers. Either 'ResultDB.tsv' OR 'final_genes.tsv' file must be provided (default '')
+  --input [X]			Input file to generate primers. Either 'ResultDB.tsv' OR 'UniqueGenesList.tsv' file must be provided (default '')
   --outdir [X]			Relative path to the output folder (default 'Primer3_output')
 Primer3 parameters:
   --genes_number [X]		Number of genes per species to design primers (default '5')
