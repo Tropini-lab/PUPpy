@@ -198,7 +198,7 @@ The outputs of ```puppy-primers``` vary depending on which mode is run:
 **Unique** mode:
 - ```Stats_pipelineOutput.tsv``` - table containing the number of unique genes found and total number of genes for each community member.
 - ```UniqueGenesPlot.pdf``` - barplot showing the number of unique genes found for each community member.
-- ```final_genes.tsv``` - list of unique genes found for each member
+- ```UniqueGenesList.tsv``` - list of unique genes found for each member
 - **```UniquePrimerTable.tsv```** - output table with the taxon-specific primers designed and their respective parameters
 - ```primer3_files/``` - folder containing the individual primer3 outputs of the primers in ```UniquePrimerTable.tsv```
 
