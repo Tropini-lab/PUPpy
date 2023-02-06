@@ -235,6 +235,7 @@ Examples of these outputs can be seen in this repository at ```./test/group_outp
 
 ## Contributors
 
+- Hans Ghezzi
 - Katharine Michelle Ng
 - Juan Camilo Burckhardt
 - Yiyun Michelle Fan
