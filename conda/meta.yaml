@@ -17,6 +17,7 @@ requirements:
     - r-stringi >=1.7.8
     - colorama >=0.4.1
     - primer3-py >=0.6.1
+    - pytest
 
   run:
     - python >=3.10.6

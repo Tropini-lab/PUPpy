@@ -49,7 +49,7 @@ cd PUPpy
 # Create and set up conda environment
 conda deactivate
 conda env create -n puppy -f PUPpy_environment.yml
-conda activate PUPpy
+conda activate puppy
 ```
 
 Or by manually installing dependencies:
@@ -242,6 +242,7 @@ Examples of these outputs can be seen in this repository at ```./test/group_outp
 ## Citation
 
 If you use PUPpy in your research, please cite the original paper:
+TODO:
 
 ## License
 
