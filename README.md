@@ -35,6 +35,8 @@ PUPpy-designed primers can be used to:
 
 # Installation
 
+**PUPpy is currently ONLY available for MacOS and Linux**
+
 ## Install with bioconda
 
 We are currently working towards making PUPpy publicly available in Bioconda.
