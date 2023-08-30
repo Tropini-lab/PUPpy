@@ -8,10 +8,13 @@ PUPpy (<ins>**P**</ins>hylogenetically <ins>**U**</ins>nique <ins>**P**</ins>rim
 
 PUPpy can design both microbe-specific primers, which selectively amplify individual members of a community, and group-specific primers, which selectively amplify user-selected members. 
 
-Primers designed with the pipeline can be used to assess the presence/absence of bacteria in samples through PCR, as well as quantify their abundance via qPCR/ddPCR (and any other primer uses!). 
+Primers designed with the pipeline can be used to:
+1) Detect microbes (e.g. with PCR),
+2) Quantify substrain-level absolute microbial abundance (qPCR/ddPCR), and
+3) Any other primer uses 
 
 <p align="center">
-  <img src="./images/PUPpy_schematic.png" width="980" />
+  <img src="./images/PUPpy_primers-horizontal.png" width="980" />
 </p>
 
 
