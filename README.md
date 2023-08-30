@@ -41,7 +41,7 @@ We are currently working towards making PUPpy publicly available in Bioconda.
 
 ## Dependencies
 
-You can also set up the conda environment to run PUPpy using the YAML definition found in this repository:
+You can set up the conda environment to run PUPpy using the YAML definition found in this repository:
 
 ```sh
 # Clone PUPpy GitHub directory
