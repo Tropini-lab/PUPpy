@@ -89,6 +89,12 @@ PUPpy takes any number of bacterial CDS files as input. Input CDS files are alig
 
 # Usage
 
+**IMPORTANT:** If installing with GitHub, make sure you are in the **scripts** directory any time you are running PUPpy scripts or it won't work.
+
+```
+cd ./PUPpy/scripts
+```
+
 PUPpy operates in 2 main steps: 
 
 1) ```puppy-align``` - performs local pairwise sequence alignment of all the input genes against each other, and 
