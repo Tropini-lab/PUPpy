@@ -8,7 +8,7 @@ PUPpy (<ins>**P**</ins>hylogenetically <ins>**U**</ins>nique <ins>**P**</ins>rim
 
 PUPpy can design both microbe-specific primers, which selectively amplify individual members of a community, and group-specific primers, which selectively amplify user-selected members. 
 
-Primers designed with the pipeline can be used to:
+PUPpy-designed primers can be used to:
 1) Detect microbes (e.g. with PCR),
 2) Quantify substrain-level absolute microbial abundance (qPCR/ddPCR), and
 3) Any other primer uses 
@@ -37,13 +37,7 @@ Primers designed with the pipeline can be used to:
 
 ## Install with bioconda
 
-PUPpy and its dependencies can be installed with conda and used on Mac and Linux.
-
-```sh 
-conda install -c bioconda puppy
-```
-
-Installing thorugh conda ensures that all the scripts from the PUPpy distribution are available on ```$PATH```
+We are currently working towards making PUPpy publicly available in Bioconda.
 
 ## Dependencies
 
@@ -86,19 +80,23 @@ Or by manually installing dependencies:
 
 # How it works
 
-PUPpy takes any number of bacterial CDS files as input. Input CDS files are aligned against each other using [MMseqs2](https://github.com/soedinglab/MMseqs2) and then parsed to identify candidate unique or group-specific genes within the defined bacterial community provided by the user. Taxon-specific primers are then designed using [Primer3](https://primer3.org/manual.html) and provided as output in an Excel file.
+PUPpy takes any number of bacterial CDS files as input. Input CDS files are aligned against each other using [MMseqs2](https://github.com/soedinglab/MMseqs2) and then parsed to identify candidate unique or group-specific genes within the defined bacterial community provided by the user. Taxon-specific primers are then designed using [Primer3](https://primer3.org/manual.html) and provided as output in a tsv file.
 
-<img src="./images/PUPpy_workflow.png" height="700">  
+<img src="./images/PUPpy_schematic.png" height="700">  
 
 
 # Usage
 
 PUPpy operates in 2 main steps: 
 
-1) ```puppy-align``` - performs local pairwise alignment of all the input CDS genes against each other, and 
+1) ```puppy-align``` - performs local pairwise sequence alignment of all the input genes against each other, and 
 2) ```puppy-primers``` - designs taxon-specific primers based on user-determined parameters.
 
 Detailed usage information, including all the primer design parameters, can be seen by running ```-h``` or ```--help``` at each step.
+```
+puppy-align -h
+puppy-primers -h
+```
 
 ### 1. Genes alignment
 The alignment step must always be run first for any **new** defined bacterial community:
