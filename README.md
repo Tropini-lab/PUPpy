@@ -266,4 +266,4 @@ If you use PUPpy in your research, please cite the original paper:
 
 PUPpy is made available under GPLv3. See LICENSE for details. Copyright Carolina Tropini.
 
-Developed by Hans Ghezzi at University of British Columbia (UBC).
+Developed by Hans Ghezzi at the University of British Columbia (UBC).
