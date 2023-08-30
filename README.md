@@ -1,6 +1,8 @@
 # Phylogenetically Unique Primers in python (PUPpy)
 
-<img src="./images/PUPpy_logo_DigitalSchematic.png" width="500">
+<p align="center">
+  <img src="./images/PUPpy_logo_DigitalSchematic.png" width="500" />
+</p>
 
 PUPpy (<ins>**P**</ins>hylogenetically <ins>**U**</ins>nique <ins>**P**</ins>rimers in <ins>**py**</ins>thon) is an automated pipeline to design taxon-specific primers for any defined bacterial community. 
 
