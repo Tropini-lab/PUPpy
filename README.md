@@ -54,7 +54,7 @@ cd PUPpy
 
 # Create and set up conda environment
 conda deactivate
-conda env create -n puppy -f PUPpy_environment.yml
+conda env create -f PUPpy_environment.yml
 conda activate PUPpy
 ```
 
@@ -69,6 +69,24 @@ Or by manually installing dependencies:
 - [r-stringi](https://github.com/gagolews/stringi)
 - [primer3-py](https://libnano.github.io/primer3-py/quickstart.html#installation)
 - [colorama](https://github.com/tartley/colorama)
+
+```sh
+# Create Conda environment
+conda deactivate
+conda create -n PUPpy python=3.10.6
+conda activate PUPpy
+
+# Install dependencies
+conda install -c bioconda -y mmseqs2
+conda install -c bioconda -y primer3-py
+conda install -y pandas=1.5
+conda install -c conda-forge -y biopython
+conda install -c conda-forge -y dask 
+conda install -c anaconda -y colorama
+conda install -c conda-forge -y r-readr # To update readr package
+conda install -c r -y r-tidyverse
+conda install -c r -y r-stringi
+```
 
 # Important: before you start
 
@@ -109,43 +127,41 @@ Detailed usage information, including all the primer design parameters, can be s
 ```
 
 ### 1. Genes alignment
-The alignment step must always be run first for any **new** defined bacterial community:
+The alignment step must always be run first for any **new** defined bacterial community. 
 
 ```python
-./puppy-align -c <PATH>/test/input -o <PATH>/test/alignment_output
+python ./puppy-align -in <PATH>/test/intended_input -un <PATH>/test/unintended_input -o <PATH>/test/alignment_output
 ```
 
-This command creates an output file, ```<PATH>/test/alignment_output/ResultDB.tsv``` which can be used as input for the primer design command (step 2).
+This command creates the output file ```<PATH>/test/alignment_output/ResultDB.tsv``` which can be used as input for the primer design command (step 2). The command `puppy-primers` can be run as many times as desired without having to rerun `puppy-align` again, as long as the bacterial community remains unchanged.
 
 ### 2. Primer design
 
-The second step consists in designing taxon-specific primers unique to individual members or shared by groups of the bacterial community.
+The second step consists in designing taxon-specific primers unique to individual members or shared by groups in the bacterial community.
 
 ```
-./puppy-primers -t test/input -i <PATH>/test/alignment_output/ResultDB.tsv -o <PATH>/test/unique_output
+./puppy-primers -in <PATH>/test/intended_input -i <PATH>/test/alignment_output/ResultDB.tsv -o <PATH>/test/unique_output
 ```
 
 By default, ```puppy-primers``` outputs **unique** primers. To design **group** primers, add the argument ```-p group``` to the code above.
 
 ```puppy-primers``` **requires** 2 arguments as input:
-- ```-t``` or ```--target_species``` - a folder containing the CDS files of the organisms for which you want to design taxon-specific primers. 
+- ```-in``` or ```--intended``` - the same folder as `puppy-align`, containing the CDS files of the organisms for which you want to design taxon-specific primers. 
 
-	- This can either be the same directory used as argument of ```-c``` in ```puppy-align```, or a subset of the ladder.
 - ```-i``` or ```--input``` - either the alignment file, ```ResultDB.tsv``` or ```UniqueGenesList.tsv``` 
 
 	- ```UniqueGenesList.tsv``` is a file created by running ```puppy-primers``` on **unique** mode, containing the list of unique genes found for the organisms listed in ```--target_species```. 
-	- This is a shortcut if you need to run ```puppy-primers``` multiple times on the same community and it provides the same output as using ```ResultDB.tsv```. The only difference is that you can only use ```UniqueGenesList.tsv``` after having run ```puppy-primers``` at least once before, while ```ResultDB.tsv``` can be used straight after ```puppy-align```.
+	- This is a shortcut if you need to run ```puppy-primers``` multiple times on the same community and it provides the same output as using ```ResultDB.tsv```. The only difference is that you can only use ```UniqueGenesList.tsv``` after having run ```puppy-primers``` at least once before, while ```ResultDB.tsv``` must be used immediately after ```puppy-align```.
 
 You can see the default primer design parameters used by Primer3 by running ```puppy-primers -h```.
-
-While we recommend **not to** run ```puppy-align``` more than once on the same defined community, ```puppy-primers``` can be run multiple times, for example to create primer pairs with different parameters.
 
 ## Command line options
 Command line options for **```puppy-align```**
 ```
 General:
   --help			This help
-  --CDSdir [X]			Directory with input CDS files of the defined microbial community (default '')
+  --intended [X]		Directory with the CDS files of the intended targets in the defined microbial community, for which primers should be designed (default '')
+  --unintended [X]		Directory with CDS files of unintended targets in the defined microbial community, for specificity checks (default '')
   --outdir [X]			Output directory (default 'Align_OUT')
   --identity [X]		Identity thresholds to report sequence alignments by MMseqs2 (default '0.3')
 ```
@@ -155,7 +171,7 @@ Command line options for **```puppy-primers```**
 General:
   --help			This help
   --primers_type [X]		Design unique or shared primers among the target bacterial group (default 'unique')
-  --target_species [X]		Directory containing the CDS files for the species to design taxon-specific primers (default '')
+  --intended [X]		Directory containing the CDS files for the species to design taxon-specific primers (default '')
   --input [X]			Input file to generate primers. Either 'ResultDB.tsv' OR 'UniqueGenesList.tsv' file must be provided (default '')
   --outdir [X]			Relative path to the output folder (default 'Primer3_output')
 Primer3 parameters:
@@ -179,6 +195,8 @@ Primer3 parameters:
 
 Currently, PUPpy supports CDS files generated from any of these 3 approaches: [prokka](https://github.com/tseemann/prokka), [RAST](https://rast.nmpdr.org/) and/or downloaded from the [NCBI](https://www.ncbi.nlm.nih.gov/assembly). This is necessary because PUPpy only recognises FASTA headers formats from these 3 programs.
 
+	- For Prokka, rename the ".ffn" output file to end with the extension ".fna"
+
 Examples of accepted FASTA headers are shown here:
 ```
 # CDS file downloaded from the NCBI:
@@ -199,9 +217,12 @@ Moreover, input CDS filenames must meet the following 3 requirements to be used 
 
 2) Filename must **contain** the string cds.
 
-	- e.g. ```cds```, ```cds_from_genomic``` or ```cds_genomic```
+	- e.g. ```cds```, ```cds_from_genomic```, ```cds_genomic``` etc...
 
 3) Filename must **end** with the extension ```.fna```
+   
+   	- e.g. ```cds.fna```, ```cds_from_genomic.fna```, ```cds_genomic.fna``` etc...
+
 
 Examples of accepted CDS filenames:
 - ```B_theta_VPI5482_cds.fna```
