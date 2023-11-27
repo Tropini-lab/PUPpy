@@ -221,7 +221,7 @@ Moreover, input CDS filenames must meet the following 3 requirements to be used 
 
 3) Filename must **end** with the extension ```.fna```
    
-   	- e.g. ```cds.fna```, ```cds_from_genomic.fna```, ```cds_genomic.fna``` etc...
+   	- e.g. ```cds.fna```, ```cds_from_genomic.fna```, ```cds_genomic.fna```, etc...
 
 
 Examples of accepted CDS filenames:
