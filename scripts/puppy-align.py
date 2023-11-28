@@ -47,7 +47,6 @@ parser.add_argument(
     "--unintended",
     help="Directory with CDS files of unintended targets in the defined microbial community, for specificity checks",
     default="",
-    required=True,
 )
 
 parser.add_argument(
