@@ -39,7 +39,14 @@ PUPpy-designed primers can be used to:
 
 ## Install with bioconda
 
-We are currently working towards making PUPpy publicly available in Bioconda.
+PUPpy can be installed for Mac on osx-64 systems using the commands below:
+
+```sh
+conda deactivate
+conda create -n PUPpy -c hghezzi puppy
+conda activate puppy
+```
+PUPpy will soon also be available through Conda on Linux, but for the moment please follow the instructions below.
 
 ## Dependencies
 
@@ -73,19 +80,15 @@ Or by manually installing dependencies:
 ```sh
 # Create Conda environment
 conda deactivate
-conda create -n PUPpy python=3.10.6
+conda create -n PUPpy python=3.10.6 pyarrow=14.0.1
 conda activate PUPpy
 
 # Install dependencies
-conda install -c bioconda -y mmseqs2
-conda install -c bioconda -y primer3-py
-conda install -y pandas=1.5
-conda install -c conda-forge -y biopython
-conda install -c conda-forge -y dask 
-conda install -c anaconda -y colorama
-conda install -c conda-forge -y r-readr # To update readr package
-conda install -c r -y r-tidyverse
-conda install -c r -y r-stringi
+conda install -y -c bioconda -c conda-forge -c anaconda -c r \
+    mmseqs2 pandas=1.5 primer3-py \
+    biopython dask \
+    colorama \
+    r-stringi r-tidyverse r-readr
 ```
 
 # Important: before you start
@@ -122,15 +125,15 @@ PUPpy operates in 2 main steps:
 
 Detailed usage information, including all the primer design parameters, can be seen by running ```-h``` or ```--help``` at each step.
 ```
-./puppy-align -h
-./puppy-primers -h
+puppy-align -h
+puppy-primers -h
 ```
 
 ### 1. Genes alignment
 The alignment step must always be run first for any **new** defined bacterial community. 
 
 ```python
-python ./puppy-align -in <PATH>/test/intended_input -un <PATH>/test/unintended_input -o <PATH>/test/alignment_output
+puppy-align -in <PATH>/test/intended_input -un <PATH>/test/unintended_input -o <PATH>/test/alignment_output
 ```
 
 This command creates the output file ```<PATH>/test/alignment_output/ResultDB.tsv``` which can be used as input for the primer design command (step 2). The command `puppy-primers` can be run as many times as desired without having to rerun `puppy-align` again, as long as the bacterial community remains unchanged.
@@ -140,7 +143,7 @@ This command creates the output file ```<PATH>/test/alignment_output/ResultDB.ts
 The second step consists in designing taxon-specific primers unique to individual members or shared by groups in the bacterial community.
 
 ```
-./puppy-primers -in <PATH>/test/intended_input -i <PATH>/test/alignment_output/ResultDB.tsv -o <PATH>/test/unique_output
+puppy-primers -in <PATH>/test/intended_input -i <PATH>/test/alignment_output/ResultDB.tsv -o <PATH>/test/unique_output
 ```
 
 By default, ```puppy-primers``` outputs **unique** primers. To design **group** primers, add the argument ```-p group``` to the code above.
