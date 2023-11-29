@@ -16,11 +16,19 @@
 # Import user-defined variables from puppy-align script. These are the values of the 3 flags of the puppy-align script.
 OUT=$1 # outdir defined in puppy-align
 CDS_intended=$2 # CDSdir defined in puppy-align
-CDS_unintended=$3 # CDSdir defined in puppy-align
-ID=$4 # ID% threshold defined in puppy-align
+ID=$3
+CDS_unintended=""
+if [ $# -eq 4 ]; then  # Check if the unintended CDS directory argument is provided
+    CDS_unintended=$3
+    ID=$4
+fi
 
-# Concatenate input CDS files
-cat $CDS_intended/*.fna $CDS_unintended/*.fna > $OUT/concatenated_CDSes.fna
+# Concatenate input CDS files conditionally
+if [ -z "$CDS_unintended" ]; then
+    cat $CDS_intended/*.fna > $OUT/concatenated_CDSes.fna
+else
+    cat $CDS_intended/*.fna $CDS_unintended/*.fna > $OUT/concatenated_CDSes.fna
+fi
 
 # Create query and target databases
 echo "Creating query and target databases from input CDS files..."

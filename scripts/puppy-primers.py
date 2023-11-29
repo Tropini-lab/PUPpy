@@ -29,13 +29,41 @@ import shutil
 
 ######################################################## flags ###########################################################################
 
+ascii_art = """
+                                                                                
+                 @    @ @ @                  @     @                            
+              @       @                      @       @                          
+           @         @                         @       @                        
+        @          @                             @       @                      
+     @            @                               @         @                   
+   @            @                                  @           @                
+ @             @                                                 @              
+@             @       @@@@@@             @@@@@@     @             ,             
+             @        @@@@@@@           @@@@@@@     @                           
+ @           @        @@@@@@   @@@@@@@    @@@@                   @              
+   @         @          @@     @@@@@@      @                   @                
+     @        @        @          @          @      @        @  @   @  @   @    
+        @      @      @                       @     @      @    @      @@  @@   
+             @@@                               @   @   @        @   @@  @     @@
+      @@@@@@        @               @@@@@       @       @  @@   @@    @  @    @ 
+      @@@@@@@@@                @@@@@@@@         @@@@/    ( @ @@@ @   @  @       
+        @@@@@@@@@@@@          @@@@@@@@@         @@@@@    @ @ @   @   @@  @      
+       @@@@@@@@              @        @        @       @ @ @@    @  @           
+       @@@@@@          @@ @@          (@ @@@@                 
+
+ASCII art designed with manytools.org from puppy logo                  
+"""
+
+
 parser = argparse.ArgumentParser(
-    prog="PUPpy",
+    prog="PROG",
     formatter_class=argparse.ArgumentDefaultsHelpFormatter,
-    description="""
+    description=f"""
     PUPpy: A Phylogenetically Unique Primer pipeline in PYthon for high resolution classification of defined microbial communities. Version 1.0
     """,
 )
+
+print(ascii_art)
 
 # Setting up flags in python
 parser.add_argument(
@@ -159,7 +187,7 @@ OUT = os.path.abspath(args.outdir)
 while True:
     if os.path.exists(OUT):
     # Get user input (yes or no)
-        user_input = input("Do you want to OVERWRITE the data in the existing output directory? (yes/no): ").strip().lower()
+        user_input = input(f"Do you want to OVERWRITE the data in the existing '{args.outdir}' output directory? (yes/no): ").strip().lower()
 
         # Check the user's response
         if user_input == "yes":
@@ -184,7 +212,7 @@ while True:
         elif user_input == "no":
             # User chose not to perform the task
             print("Please choose a different output directory name. Exiting...")
-            break #Exit loop if user provides valid input
+            exit() #Exit loop if user provides valid input
         else:
             # Handle invalid input
             print("Invalid input. Please enter 'yes' or 'no'.")
@@ -496,6 +524,16 @@ def change_header(line, name):
             + header_name[:separator_index]
             + "_cds_"
             + header_name[separator_index+5:]
+            )
+        elif "_cds" in line:
+            separator_index = header_name.index("_cds")
+            New_line = (
+                ">lcl|"
+                + name
+                + "-"
+                + header_name[:separator_index]
+                + "_cds"
+                + header_name[separator_index:]
             )
         else:
             separator_index = header_name.index("_")
@@ -1115,14 +1153,12 @@ elif args.primers_type == "group":
     # Determine how many genes we can design primers for:
     if len(df_sorted) < args.genes_number * step:
         # re-define the args.genes_number
-        genes_number = len(df_sorted)
+        genes_number = len(df_sorted) / step
     else:
         genes_number = args.genes_number
 
     print(df_sorted)
-    for i in range(0, genes_number * step, step):
-        print("i") 
-        print(i) 
+    for i in range(0, int(genes_number) * step, step):
         # (start, stop, step). It's important to define step as the same number of target organisms.
         # Due to the nature of this group workflow, we are likely to select for the same genes across different organisms. When sorting by gene length,
         # the same genes (i.e. nucleotide sequences) across the target organisms (genes will be called differently) will be shown consecutively.
@@ -1136,21 +1172,12 @@ elif args.primers_type == "group":
         # Must now retrieve the CDS filename from the bacterial name:
         ## Define path and name of bacterium to then find which file exists in that path that starts with that bacterial name
         CDS_filename = CDS + "/" + f"{speciesName}*.fna"
-        print("CDS_filename")
-        print(CDS_filename)
         # Find the exact filename
         for file in glob(CDS_filename):
-            print("file")
-            print(file)
             CDS_filename = file  # This is the exact filename
             record_dictionary = extract_seq_dict(CDS_filename, speciesName)
             i_sequence = extract_seq(i_cds, record_dictionary)
-            print("i_sequence")
-            print(i_sequence)
             i_sequenceRangeTemplate = i_sequence[int(i_sequenceRange[0]):int(i_sequenceRange[1])]
-            print("i_sequenceRangeTemplate")
-            print(i_sequenceRangeTemplate)
-
             filename = speciesName + "_" + i_cds
             # Generate N primers (determined by flag: --primers_number) using primer3
             primers = primer3.bindings.designPrimers(
@@ -1215,6 +1242,17 @@ elif args.primers_type == "group":
     df_concatenated = pd.concat(list_of_df).sort_values(
         by=["num_targets_found", "species"], ascending=False
     )
+
+    # Change data type
+    df_concatenated['primer_option'] = df_concatenated['primer_option'].astype(int)
+    df_concatenated['amplicon_size'] = df_concatenated['amplicon_size'].astype(int)
+    df_concatenated['F_length'] = df_concatenated['F_length'].astype(int)
+    df_concatenated['R_length'] = df_concatenated['R_length'].astype(int)
+    # Round specific float columns to two decimal places
+    df_concatenated['pair_penalty_score'] = df_concatenated['pair_penalty_score'].round(4)
+    df_concatenated['F_tm'] = df_concatenated['F_tm'].round(2)
+    df_concatenated['R_tm'] = df_concatenated['R_tm'].round(2)
+    
     # Store combined primer table as a .tsv file
     df_concatenated.to_csv(
         os.path.join(OUT, r"GroupPrimerTable.tsv"), index=False, sep="\t"

@@ -22,16 +22,45 @@ from colorama import init
 from colorama import Fore, Style
 import glob, os
 import shutil
+import logging
+import textwrap
 
 ######################################################## flags ###########################################################################
+ascii_art = """
+                                                                                
+                 @    @ @ @                  @     @                            
+              @       @                      @       @                          
+           @         @                         @       @                        
+        @          @                             @       @                      
+     @            @                               @         @                   
+   @            @                                  @           @                
+ @             @                                                 @              
+@             @       @@@@@@             @@@@@@     @             ,             
+             @        @@@@@@@           @@@@@@@     @                           
+ @           @        @@@@@@   @@@@@@@    @@@@                   @              
+   @         @          @@     @@@@@@      @                   @                
+     @        @        @          @          @      @        @  @   @  @   @    
+        @      @      @                       @     @      @    @      @@  @@   
+             @@@                               @   @   @        @   @@  @     @@
+      @@@@@@        @               @@@@@       @       @  @@   @@    @  @    @ 
+      @@@@@@@@@                @@@@@@@@         @@@@/    ( @ @@@ @   @  @       
+        @@@@@@@@@@@@          @@@@@@@@@         @@@@@    @ @ @   @   @@  @      
+       @@@@@@@@              @        @        @       @ @ @@    @  @           
+       @@@@@@          @@ @@          (@ @@@@                 
+
+ASCII art designed with manytools.org from puppy logo                  
+"""
+
 
 parser = argparse.ArgumentParser(
     prog="PROG",
     formatter_class=argparse.ArgumentDefaultsHelpFormatter,
-    description="""
+    description=f"""
     PUPpy: A Phylogenetically Unique Primer pipeline in PYthon for high resolution classification of defined microbial communities. Version 1.0
     """,
 )
+
+print(ascii_art)
 
 # Setting up flags in python
 parser.add_argument(
@@ -56,7 +85,7 @@ parser.add_argument(
     default="Align_OUT",
 )
 parser.add_argument(
-    "-i",
+    "-id",
     "--identity",
     help="Identity thresholds to report sequence alignments by MMseqs2",
     default=0.3,
@@ -70,15 +99,16 @@ args = parser.parse_args()
 
 # Path to folder with CDS files
 cds_intended = os.path.abspath(args.intended)
-cds_unintended = os.path.abspath(args.unintended)
+cds_unintended = os.path.abspath(args.unintended if args.unintended else '')
 
 # Path to output directory
 output = os.path.abspath(args.outdir)
+
 # Check if output folder exists. If it does, exit the program, otherwise create it.
 while True:
     if os.path.exists(output):
     # Get user input (yes or no)
-        user_input = input("Do you want to OVERWRITE the data in the existing output directory? (yes/no): ").strip().lower()
+        user_input = input(f"Do you want to OVERWRITE the data in the existing '{args.outdir}' output directory? (yes/no): ").strip().lower()
 
         # Check the user's response
         if user_input == "yes":
@@ -103,7 +133,7 @@ while True:
         elif user_input == "no":
             # User chose not to perform the task
             print("Please choose a different output directory name. Exiting...")
-            break #Exit loop if user provides valid input
+            exit() #Exit loop if user provides valid input
         else:
             # Handle invalid input
             print("Invalid input. Please enter 'yes' or 'no'.")
@@ -111,6 +141,19 @@ while True:
     else:
         os.mkdir(output)
         break #Exit loop if output dir doesn't exist initially
+
+# Configure logging
+# Define  log file name
+log_file = 'align_logfile.txt'
+# Specify log file output dir
+log_file_path = os.path.join(output, log_file)
+
+logging.basicConfig(level=logging.DEBUG,
+                    format='%(asctime)s - %(levelname)s - %(message)s',
+                    handlers=[
+                        logging.FileHandler(log_file_path),
+                        logging.StreamHandler(sys.stdout)
+                    ])
 
 ######################################################## Functions ###########################################################################
 
@@ -165,6 +208,15 @@ def change_header(line, name):
             + "_cds_"
             + header_name[separator_index+5:]
             )
+        elif "_cds" in line:
+            separator_index = header_name.index("_cds")
+            New_line = (
+                ">lcl|"
+                + name
+                + "-"
+                + header_name[:separator_index]
+                + header_name[separator_index:]
+            )
         else:
             separator_index = header_name.index("_")
             New_line = (
@@ -181,6 +233,7 @@ def change_header(line, name):
 ##################################################### RENAME FASTA HEADERS #################################################################
 
 # Execute function 'rename_fasta' to rename FASTA headers in input CDS files.
+logging.info("Renaming FASTA headers of input CDS files")
 
 # List of directories with files to rename
 directories = [cds_intended, cds_unintended]
@@ -200,19 +253,29 @@ for directory in directories:
 
 ##################################################### Alignments with MMseqs2 #################################################################
 
-# Run MMseqs2.sh script to align all genes in the defined microbial community.
-subprocess.run(["chmod", "755", "./MMseqs2.sh"]) # Give permissions to run script
+# Run MMseqs2 to align genes and capture output
+try:
+    mmseqs2_args = ["./scripts/MMseqs2.sh", output, cds_intended, str(args.identity)]
+    if cds_unintended and os.listdir(cds_unintended):  # Check if unintended CDS directory is not empty
+        mmseqs2_args.insert(2, cds_unintended)  # Insert only if unintended CDS files are present
+    
+    # Start the MMseqs2.sh script as a subprocess
+    process = subprocess.Popen(["./scripts/MMseqs2.sh", output, cds_intended, cds_unintended, str(args.identity)], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
-# Define  log file name
-log_file = 'align_logfile.txt'
-# Specify log file output dir
-log_file_path = os.path.join(output, log_file)
+    # Iterate over the output lines
+    for line in process.stdout:
+        logging.info(line.strip())  # Log each line to both stdout and logfile
+    
+    # Wait for the subprocess to finish and get the exit code
+    process.wait()
 
-# Define the shell command with 'tee' to redirect output
-shell_command = f"./MMseqs2.sh {output} {cds_intended} {cds_unintended} {str(args.identity)} | tee {log_file_path}"
+    # Check for errors and log them
+    if process.returncode == 0:
+        # If the subprocess was successful, log the "Done" message in green
+        logging.info(Fore.GREEN + "Done!" + Style.RESET_ALL)
+    else:
+        # If there were errors, log an error message
+        logging.error("Script finished with errors.")
 
-# Run the shell command
-subprocess.check_call(shell_command, shell=True)
-
-# Print successful completion message
-print(Fore.GREEN + "Done!" + Style.RESET_ALL)
+except Exception as e:
+    logging.error(f"Error running MMseqs2.sh: {e}")
