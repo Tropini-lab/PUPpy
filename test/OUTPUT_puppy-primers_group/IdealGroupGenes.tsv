@@ -1,0 +1,61 @@
+species_name	species_gene	gene_length	SequenceIncluded	SequenceIncluded_length	targets	num_targets_found	num_targets_missing	Missing_targets	num_unintended_targets	unintended_targets	Comments
+Bacteroides_ovatus_ATCC_8483	cds_WP_004296542.1_2840	474	[1, 474]	474	Bacteroides_ovatus_ATCC_8483,Bacteroides_thetaiotaomicron_VPI_5482	2	0	NA	0	NA	"NUMBER OF ALIGNMENTS:
+This gene has exactly 1 alignment to each intended target.
+UNINTENDED AMPLIFICATION:
+This gene only amplifies intended species in the defined community.
+ALIGNMENTS %ID:
+This gene aligns perfectly (100% ID) to each target gene.
+QUERY COVERAGE:
+The entire length of this gene (i.e. 100% query coverage) aligns to each target gene.
+TARGET COVERAGE:
+This gene aligns to the entire sequence of each target gene (i.e. 100% target coverage)."
+Bacteroides_thetaiotaomicron_VPI_5482	cds_WP_004296542.1_943	474	[1, 474]	474	Bacteroides_ovatus_ATCC_8483,Bacteroides_thetaiotaomicron_VPI_5482	2	0	NA	0	NA	"NUMBER OF ALIGNMENTS:
+This gene has exactly 1 alignment to each intended target.
+UNINTENDED AMPLIFICATION:
+This gene only amplifies intended species in the defined community.
+ALIGNMENTS %ID:
+This gene aligns perfectly (100% ID) to each target gene.
+QUERY COVERAGE:
+The entire length of this gene (i.e. 100% query coverage) aligns to each target gene.
+TARGET COVERAGE:
+This gene aligns to the entire sequence of each target gene (i.e. 100% target coverage)."
+Bacteroides_ovatus_ATCC_8483	cds_WP_004291965.1_3356	237	[1, 237]	237	Bacteroides_ovatus_ATCC_8483,Bacteroides_thetaiotaomicron_VPI_5482	2	0	NA	0	NA	"NUMBER OF ALIGNMENTS:
+This gene has exactly 1 alignment to each intended target.
+UNINTENDED AMPLIFICATION:
+This gene only amplifies intended species in the defined community.
+ALIGNMENTS %ID:
+This gene aligns perfectly (100% ID) to each target gene.
+QUERY COVERAGE:
+The entire length of this gene (i.e. 100% query coverage) aligns to each target gene.
+TARGET COVERAGE:
+This gene aligns to the entire sequence of each target gene (i.e. 100% target coverage)."
+Bacteroides_thetaiotaomicron_VPI_5482	cds_WP_004291965.1_3352	237	[1, 237]	237	Bacteroides_ovatus_ATCC_8483,Bacteroides_thetaiotaomicron_VPI_5482	2	0	NA	0	NA	"NUMBER OF ALIGNMENTS:
+This gene has exactly 1 alignment to each intended target.
+UNINTENDED AMPLIFICATION:
+This gene only amplifies intended species in the defined community.
+ALIGNMENTS %ID:
+This gene aligns perfectly (100% ID) to each target gene.
+QUERY COVERAGE:
+The entire length of this gene (i.e. 100% query coverage) aligns to each target gene.
+TARGET COVERAGE:
+This gene aligns to the entire sequence of each target gene (i.e. 100% target coverage)."
+Bacteroides_ovatus_ATCC_8483	cds_WP_002558051.1_2648	117	[1, 117]	117	Bacteroides_ovatus_ATCC_8483,Bacteroides_thetaiotaomicron_VPI_5482	2	0	NA	0	NA	"NUMBER OF ALIGNMENTS:
+This gene has exactly 1 alignment to each intended target.
+UNINTENDED AMPLIFICATION:
+This gene only amplifies intended species in the defined community.
+ALIGNMENTS %ID:
+This gene aligns perfectly (100% ID) to each target gene.
+QUERY COVERAGE:
+The entire length of this gene (i.e. 100% query coverage) aligns to each target gene.
+TARGET COVERAGE:
+This gene aligns to the entire sequence of each target gene (i.e. 100% target coverage)."
+Bacteroides_thetaiotaomicron_VPI_5482	cds_WP_002558051.1_2696	117	[1, 117]	117	Bacteroides_ovatus_ATCC_8483,Bacteroides_thetaiotaomicron_VPI_5482	2	0	NA	0	NA	"NUMBER OF ALIGNMENTS:
+This gene has exactly 1 alignment to each intended target.
+UNINTENDED AMPLIFICATION:
+This gene only amplifies intended species in the defined community.
+ALIGNMENTS %ID:
+This gene aligns perfectly (100% ID) to each target gene.
+QUERY COVERAGE:
+The entire length of this gene (i.e. 100% query coverage) aligns to each target gene.
+TARGET COVERAGE:
+This gene aligns to the entire sequence of each target gene (i.e. 100% target coverage)."

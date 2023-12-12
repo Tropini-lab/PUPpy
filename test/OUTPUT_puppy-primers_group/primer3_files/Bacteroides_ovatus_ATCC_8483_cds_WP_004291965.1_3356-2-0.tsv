@@ -1,0 +1,7 @@
+PRIMER_LEFT_EXPLAIN	 considered 678, GC content failed 488, GC clamp failed 41, low tm 111, high tm 1, long poly-x seq 1, ok 36
+PRIMER_RIGHT_EXPLAIN	 considered 609, GC content failed 383, GC clamp failed 56, low tm 125, high tm 1, long poly-x seq 9, ok 35
+PRIMER_PAIR_EXPLAIN	 considered 1, unacceptable product size 1, ok 0
+PRIMER_LEFT_NUM_RETURNED	 0
+PRIMER_RIGHT_NUM_RETURNED	 0
+PRIMER_INTERNAL_NUM_RETURNED	 0
+PRIMER_PAIR_NUM_RETURNED	 0
