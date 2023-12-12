@@ -1,0 +1,3 @@
+2023-12-11 21:07:24,153 - INFO - Renaming FASTA headers of input CDS files
+2023-12-11 21:07:24,301 - INFO - Aligning genes with MMseqs2. This might take a while.
+2023-12-11 21:14:58,825 - INFO - Everything went smoothly! Check the directory /Users/hansghezzi/Desktop/TROPINI/TROPINI/PROJECTS/Biof_Pipelines/Huans_PIPELINE/VALIDATION/111223_PUPpy_remakingSSS_GUT-genePlots/Align_OUT-github_test for output files!
