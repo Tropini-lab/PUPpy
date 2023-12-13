@@ -1,0 +1,252 @@
+#!/usr/bin/env python3
+
+import tkinter as tk
+from tkinter import filedialog, messagebox, ttk
+import subprocess
+import os
+import re
+
+def browse_directory(entry):
+    initialdir = os.getcwd()
+    directory = filedialog.askdirectory(initialdir=initialdir)
+    if directory:
+        entry.delete(0, tk.END)
+        entry.insert(0, directory)
+
+def browse_file(entry, initialdir):
+    filepath = filedialog.askopenfilename(initialdir=initialdir)
+    if filepath:
+        entry.delete(0, tk.END)
+        entry.insert(0, filepath)
+
+def run_script(script_path, args):
+    try:
+        subprocess.run([script_path] + args, check=True)
+        messagebox.showinfo("Success", "Script finished executing!")
+    except subprocess.CalledProcessError as error:
+        messagebox.showerror("Error", f"An error occurred: {error}")
+
+def display_help(script):
+    help_text = subprocess.check_output([script, "--help"]).decode()
+    help_window = tk.Toplevel(window)
+    help_window.title("Help Information")
+    text_widget = tk.Text(help_window, height=50, width=100)
+    text_widget.pack()
+    text_widget.insert(tk.END, help_text)
+
+def run_puppy_align():
+    args = []
+    if in_entry.get().strip():
+        args.extend(['-pr', in_entry.get().strip()])
+    if unint_entry.get().strip():
+        args.extend(['-nt', unint_entry.get().strip()])
+    if output_align_entry.get().strip():
+        args.extend(['-o', output_align_entry.get().strip()])
+    if identity_entry.get().strip():
+        args.extend(['-id', identity_entry.get().strip()])
+    run_script("puppy-align", args)
+
+def run_puppy_primers():
+    args = []
+    primer_type = primers_type_var.get()
+    args.extend(['-p', primer_type])
+    if input_entry.get().strip():
+        args.extend(['-i', input_entry.get().strip()])
+    if cds_in_entry.get().strip():
+        args.extend(['-pr', cds_in_entry.get().strip()])
+    if output_primers_entry.get().strip():
+        args.extend(['-o', output_primers_entry.get().strip()])
+
+    # Add all the primer design parameters
+    args.extend(['-ng', str(genes_number_var.get()).strip()])
+    args.extend(['-np', str(primers_number_var.get())])
+    args.extend(['-ops', str(optimal_primerSize_var.get())])
+    args.extend(['-mips', str(min_primerSize_var.get())])
+    args.extend(['-maps', str(max_primerSize_var.get())])
+    args.extend(['-optm', str(optimal_primerTm_var.get())])
+    args.extend(['-mitm', str(min_primerTm_var.get())])
+    args.extend(['-matm', str(max_primerTm_var.get())])
+    args.extend(['-tmd', str(max_TmDifference_var.get())])
+    args.extend(['-migc', str(min_GCcontent_var.get())])
+    args.extend(['-magc', str(max_GCcontent_var.get())])
+
+    # Validate and add the -s flag value
+    s_value = s_range_var.get().strip()
+    if s_value:
+        # Check if the input matches the 'number-number' format
+        if re.match(r"^\d+-\d+$", s_value):
+            args.extend(['-s', s_value])
+        else:
+            messagebox.showerror("Input Error", "Invalid format for size range. Please enter in 'number-number' format (e.g., 75-100).")
+            return  # Exit the function to prevent script execution
+    
+    args.extend(['-mpolyx', str(max_polyx_var.get())])
+    args.extend(['-GCc', str(GCclamp_var.get())])
+
+    run_script("puppy-primers", args)
+
+# Collapsible Section for Primer Design Parameters
+def toggle_primer_params():
+    if primer_params_frame.winfo_viewable():
+        primer_params_frame.grid_remove()
+        help_button.grid(row=6, column=0, sticky='W')
+    else:
+        primer_params_frame.grid()
+        help_button.grid(row=19, column=0, sticky='W')
+
+window = tk.Tk()
+window.title("PUPpy Pipeline GUI")
+
+# Define tkinter variables: puppy-align
+outdir_var = tk.StringVar(value="Align_OUT")  # Default value for output folder
+identity_var = tk.DoubleVar(value=0.3)  # Default value for identity
+
+# GUI elements for puppy-align
+align_frame = ttk.Frame(window, padding="10")
+align_frame.grid(row=0, column=0, sticky=(tk.W, tk.E))
+
+ttk.Label(align_frame, text="Primer Target CDS Folder:").grid(column=0, row=0, sticky='W')
+in_entry = ttk.Entry(align_frame, width=50)
+in_entry.grid(column=1, row=0, sticky='W')
+ttk.Button(align_frame, text="Browse", command=lambda: browse_directory(in_entry)).grid(column=2, row=0)
+
+ttk.Label(align_frame, text="Non-target CDS Folder:").grid(column=0, row=1, sticky='W')
+unint_entry = ttk.Entry(align_frame, width=50)
+unint_entry.grid(column=1, row=1, sticky='W')
+ttk.Button(align_frame, text="Browse", command=lambda: browse_directory(unint_entry)).grid(column=2, row=1)
+
+ttk.Label(align_frame, text="Output Folder:").grid(column=0, row=2, sticky='W')
+output_align_entry = ttk.Entry(align_frame, width=50, textvariable=outdir_var)
+output_align_entry.grid(column=1, row=2, sticky='W')
+
+ttk.Label(align_frame, text="Identity Threshold:").grid(column=0, row=3, sticky='W')
+identity_entry = ttk.Entry(align_frame, width=50, textvariable=identity_var)
+identity_entry.grid(column=1, row=3, sticky='W')
+
+# Define tkinter variables: puppy-primers
+primers_type_var = tk.StringVar(value="unique")
+input_var = tk.StringVar()  # Variable for -i flag
+intended_var = tk.StringVar()  # Variable for -pr flag
+output_primers_var = tk.StringVar(value="Primer3_output")  # Default value for output folder
+genes_number_var = tk.IntVar(value=5)  # Default value for -ng flag
+primers_number_var = tk.IntVar(value=4)  # Default value for -np flag
+optimal_primerSize_var = tk.IntVar(value=20) # Default value for -ops flag
+min_primerSize_var = tk.IntVar(value=18) # Default value for -mips flag
+max_primerSize_var = tk.IntVar(value=22) # Default value for -maps flag
+optimal_primerTm_var = tk.DoubleVar(value=60.0) # Default value for -optm flag
+min_primerTm_var = tk.DoubleVar(value=58.0) # Default value for -mitm flag
+max_primerTm_var = tk.DoubleVar(value=63.0) # Default value for -matm flag
+max_TmDifference_var = tk.DoubleVar(value=2.0) # Default value for -tmd flag
+min_GCcontent_var = tk.DoubleVar(value=40.0) # Default value for -migc flag
+max_GCcontent_var = tk.DoubleVar(value=60.0) # Default value for -magc flag
+s_range_var = tk.StringVar(value="75-150")  # Default start value for -s flag
+max_polyx_var = tk.IntVar(value =3) # Default value for -mpolyx flag
+GCclamp_var = tk.IntVar(value=1) # Default value for -GCc flag
+
+# GUI elements for puppy-primers
+primers_frame = ttk.Frame(window, padding="10")
+primers_frame.grid(row=0, column=1, sticky=(tk.W, tk.E))
+
+# Primers Type (Unique/Group)
+ttk.Label(primers_frame, text="Primers Type:").grid(column=0, row=0, sticky='W')
+unique_rb = ttk.Radiobutton(primers_frame, text='Unique', variable=primers_type_var, value='unique')
+unique_rb.grid(column=1, row=0, sticky='W')
+group_rb = ttk.Radiobutton(primers_frame, text='Group', variable=primers_type_var, value='group')
+group_rb.grid(column=2, row=0, sticky='W')
+
+# Input File
+ttk.Label(primers_frame, text="Input File:").grid(column=0, row=1, sticky='W')
+input_entry = ttk.Entry(primers_frame, width=50)
+input_entry.grid(column=1, row=1, sticky='W', columnspan=2)
+ttk.Button(primers_frame, text="Browse", command=lambda: browse_file(input_entry, output_align_entry.get())).grid(column=3, row=1)
+
+# Primer Target CDS Folder
+ttk.Label(primers_frame, text="Primer Target CDS Folder:").grid(column=0, row=2, sticky='W')
+cds_in_entry = ttk.Entry(primers_frame, width=50)
+cds_in_entry.grid(column=1, row=2, sticky='W', columnspan=2)
+ttk.Button(primers_frame, text="Browse", command=lambda: browse_directory(cds_in_entry)).grid(column=3, row=2)
+
+# Output Folder
+ttk.Label(primers_frame, text="Output Folder:").grid(column=0, row=3, sticky='W')
+output_primers_entry = ttk.Entry(primers_frame, width=50, textvariable=output_primers_var)
+output_primers_entry.grid(column=1, row=3, sticky='W', columnspan=2)
+
+# Primer Design Parameters (Collapsible Section)
+toggle_button = ttk.Button(primers_frame, text="Primer Design Parameters", command=toggle_primer_params)
+toggle_button.grid(column=0, row=5, columnspan=3, sticky='W')
+
+primer_params_frame = ttk.Frame(primers_frame, padding="10")
+primer_params_frame.grid(row=6, column=0, columnspan=3, sticky='W')
+primer_params_frame.grid_remove()  # Initially hide this section
+
+# Add widgets for primer design parameters:
+ttk.Label(primer_params_frame, text="Number of genes (-ng):").grid(column=0, row=0, sticky='W')
+genes_number_entry = ttk.Entry(primer_params_frame, width=50, textvariable=genes_number_var)
+genes_number_entry.grid(column=1, row=0, sticky='W')
+
+ttk.Label(primer_params_frame, text="Number of primers (-np):").grid(column=0, row=1, sticky='W')
+primers_number_entry = ttk.Entry(primer_params_frame, width=50, textvariable=primers_number_var)
+primers_number_entry.grid(column=1, row=1, sticky='W')
+
+ttk.Label(primer_params_frame, text="Optimal primer size (-ops):").grid(column=0, row=2, sticky='W')
+primers_number_entry = ttk.Entry(primer_params_frame, width=50, textvariable=optimal_primerSize_var)
+primers_number_entry.grid(column=1, row=2, sticky='W')
+
+ttk.Label(primer_params_frame, text="Minimum primer size (-mips):").grid(column=0, row=3, sticky='W')
+primers_number_entry = ttk.Entry(primer_params_frame, width=50, textvariable=min_primerSize_var)
+primers_number_entry.grid(column=1, row=3, sticky='W')
+
+ttk.Label(primer_params_frame, text="Maximum primer size (-maps):").grid(column=0, row=4, sticky='W')
+primers_number_entry = ttk.Entry(primer_params_frame, width=50, textvariable=max_primerSize_var)
+primers_number_entry.grid(column=1, row=4, sticky='W')
+
+ttk.Label(primer_params_frame, text="Optimal primer Tm (-optm):").grid(column=0, row=5, sticky='W')
+primers_number_entry = ttk.Entry(primer_params_frame, width=50, textvariable=optimal_primerTm_var)
+primers_number_entry.grid(column=1, row=5, sticky='W')
+
+ttk.Label(primer_params_frame, text="Minimum primer Tm (-mitm):").grid(column=0, row=6, sticky='W')
+primers_number_entry = ttk.Entry(primer_params_frame, width=50, textvariable=min_primerTm_var)
+primers_number_entry.grid(column=1, row=6, sticky='W')
+
+ttk.Label(primer_params_frame, text="Maximum primer Tm (-matm):").grid(column=0, row=7, sticky='W')
+primers_number_entry = ttk.Entry(primer_params_frame, width=50, textvariable=max_primerTm_var)
+primers_number_entry.grid(column=1, row=7, sticky='W')
+
+ttk.Label(primer_params_frame, text="Maximum Tm difference (-tmd):").grid(column=0, row=8, sticky='W')
+primers_number_entry = ttk.Entry(primer_params_frame, width=50, textvariable=max_TmDifference_var)
+primers_number_entry.grid(column=1, row=8, sticky='W')
+
+ttk.Label(primer_params_frame, text="Minimum primer GC% (-migc):").grid(column=0, row=9, sticky='W')
+primers_number_entry = ttk.Entry(primer_params_frame, width=50, textvariable=min_GCcontent_var)
+primers_number_entry.grid(column=1, row=9, sticky='W')
+
+ttk.Label(primer_params_frame, text="Maximum primer GC% (-magc):").grid(column=0, row=10, sticky='W')
+primers_number_entry = ttk.Entry(primer_params_frame, width=50, textvariable=max_GCcontent_var)
+primers_number_entry.grid(column=1, row=10, sticky='W')
+
+ttk.Label(primer_params_frame, text="Product size range (-s):").grid(column=0, row=11, sticky='W')
+primers_number_entry = ttk.Entry(primer_params_frame, width=50, textvariable=s_range_var)
+primers_number_entry.grid(column=1, row=11, sticky='W')
+
+ttk.Label(primer_params_frame, text="Maximum poly-x (-mpolyx):").grid(column=0, row=12, sticky='W')
+primers_number_entry = ttk.Entry(primer_params_frame, width=50, textvariable=max_polyx_var)
+primers_number_entry.grid(column=1, row=12, sticky='W')
+
+ttk.Label(primer_params_frame, text="Primer GC clamp (-GCc):").grid(column=0, row=13, sticky='W')
+primers_number_entry = ttk.Entry(primer_params_frame, width=50, textvariable=GCclamp_var)
+primers_number_entry.grid(column=1, row=13, sticky='W')
+
+
+# Run buttons
+run_align_button = ttk.Button(window, text="Run puppy-align", command=run_puppy_align)
+run_align_button.grid(row=1, column=0, sticky=(tk.W, tk.E))
+
+run_primers_button = ttk.Button(window, text="Run puppy-primers", command=run_puppy_primers)
+run_primers_button.grid(row=1, column=1, sticky=(tk.W, tk.E))
+
+# Help buttons
+ttk.Button(align_frame, text="Help puppy-align", command=lambda: display_help("puppy-align")).grid(column=0, row=4, sticky='W')
+help_button = ttk.Button(primers_frame, text="Help puppy-primers", command=lambda: display_help("puppy-primers"))
+help_button.grid(row=6, column=0, sticky='W')
+
+window.mainloop()
