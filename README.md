@@ -37,18 +37,36 @@ PUPpy-designed primers can be used to:
 
 **PUPpy is currently ONLY available for MacOS and Linux**
 
-## Install with conda channel
+## Install with conda - MAC ONLY
 
-PUPpy can be installed for Mac on osx-64 systems using the commands below:
+NOTE! If you have computer using Apple silicon processors (M1 or M2), you will need to install the puppy package through a terminal using Rosetta. This is because some of the PUPpy dependencies are only available on Intel X86_64 and will thus cause problems when trying to install on ARM64 (M1/M2 architecture). To create a Rosetta terminal, please follow the steps below:
+
+- Choose your terminal app of choice
+- Make sure you quit any open terminal windows (command + Q)
+- Open Finder
+- Navigate to 'Applications'
+- Find your terminal app and right-click
+- Select 'Duplicate'
+- Find the cloned app and rename to 'Rosetta terminal'
+- Right-click the 'Rosetta terminal' app and select 'Get Info'
+- In the 'General' section, check 'Open using Rosetta'
+
+Make sure you open your Rosetta terminal when trying to install PUPpy. To ensure you are running Rosetta you can run ```echo $(arch)```, which should return ```i386```. Once you confirmed this, you can proceed with the installation below:
+
+Ensure that the conda-forge and bioconda channels are added prior to installation:
 
 ```sh
-conda deactivate
-conda create -n PUPpy -c hghezzi puppy
-conda activate puppy
+conda config --add channels defaults
+conda config --add channels conda-forge
+conda config --add channels bioconda
 ```
-PUPpy will soon also be available through Conda on Linux, but for the moment please follow the instructions below.
+You can now create a new environment and install the puppy package:
 
-## Dependencies
+```sh
+conda create -n puppy -c hghezzi -y puppy
+```
+
+## Exported environment - MAC
 
 You can set up the conda environment to run PUPpy using the YAML definition found in this repository:
 
@@ -61,34 +79,33 @@ cd PUPpy
 
 # Create and set up conda environment
 conda deactivate
-conda env create -f PUPpy_environment.yml
+conda env create -f puppy_env.yml
 conda activate PUPpy
 ```
 
+## Manual installation of dependencies - MAC & LINUX
 Or by manually installing dependencies:
 
 - [MMseqs2](https://github.com/soedinglab/MMseqs2)
 - [Pandas](https://github.com/pandas-dev/pandas) >=1.5
 - [BioPython](https://github.com/biopython/biopython)
 - [Dask](https://github.com/dask/dask)
-- [r-tidyverse](https://github.com/conda-forge/r-tidyverse-feedstock)
-- [r-readr](https://github.com/tidyverse/readr)
-- [r-stringi](https://github.com/gagolews/stringi)
+- [seaborn](https://github.com/mwaskom/seaborn)
+- [matplotlib](https://github.com/matplotlib/matplotlib)
 - [primer3-py](https://libnano.github.io/primer3-py/quickstart.html#installation)
 - [colorama](https://github.com/tartley/colorama)
 
 ```sh
 # Create Conda environment
 conda deactivate
-conda create -n PUPpy python=3.10.6 pyarrow=14.0.1
-conda activate PUPpy
+conda create -n puppy python=3.10.6 pyarrow=14.0.1
+conda activate puppy
 
 # Install dependencies
-conda install -y -c bioconda -c conda-forge -c anaconda -c r \
+conda install -y -c bioconda -c conda-forge -c anaconda \
     mmseqs2 pandas=1.5 primer3-py \
-    biopython dask \
-    colorama \
-    r-stringi r-tidyverse r-readr
+    biopython dask seaborn matplotlib \
+    colorama
 ```
 
 # Important: before you start
