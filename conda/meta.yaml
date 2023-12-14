@@ -1,0 +1,49 @@
+package:
+  name: puppy
+  version: "1.0"
+
+source:
+  url: https://github.com/Tropini-lab/PUPpy/archive/refs/tags/v1.0.tar.gz
+  sha256: 32a65005963ece9501a15fc0e1ebaabe5719ed30c7ba11f7732c6752a3b24037
+
+build:
+  number: 0
+  script_env:
+    - PREFIX
+  script: build.sh
+  post:
+    - '[ "$(uname -m)" = "arm64" ] && curl -L [https://mmseqs.com/latest/mmseqs-linux-arm64.tar.gz] | tar xz -C $PREFIX/bin/'
+
+requirements:
+  host:
+    - python=3.10.6
+    - setuptools
+  run:
+    - python >=3.10.6
+    - pyarrow>=14.0.1
+    - mmseqs2 >=14.7 # [not arm64]
+    - pandas >=1.5
+    - biopython >=1.80
+    - dask >=0.15.2
+    - matplotlib >=3.8.2
+    - pip
+    - pip:
+      - primer3-py >=0.6.1
+      - seaborn >=0.13.0
+      - colorama >=0.4.1
+
+test:
+  commands:
+    - puppy-align -h
+    - puppy-primers -h
+    - puppy-GUI
+
+about:
+  home: https://github.com/Tropini-lab/PUPpy
+  license: GPL3
+  license_file: LICENSE.txt
+  summary: PUPpy a primer design pipeline for substrain-level microbial detection and absolute quantification.
+
+extra:
+  recipe-maintainers:
+    - hghezzi
