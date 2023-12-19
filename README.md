@@ -37,9 +37,12 @@ PUPpy-designed primers can be used to:
 
 **PUPpy is currently ONLY available for MacOS and Linux**
 
-Installation of the puppy package varies depending on the architecture of your computer. To check what you have, open your terminal app and run: ```uname -m```. The architectures currently supported are: 1) osx-64 (Mac Intel chips), arm64 (Mac M1/M2 chips), and linux-64.
+Installation of the puppy package varies depending on the architecture of your computer. To check what you have, open your terminal app and run: ```uname -m```. The architectures currently supported are: 
+1) x86-64 (Mac Intel chips, or emulated)
+2) arm64 (Mac M1/M2 chips)
+3) linux-64
 
-## Install with conda (osx-64 & linux-64)
+## Install with conda (x86-64 & linux-64)
 
 Ensure that the conda-forge and bioconda channels are added prior to installation:
 
@@ -54,7 +57,29 @@ You can now create a new environment and install the puppy package:
 conda create -n puppy -c hghezzi -y puppy
 ```
 
-## Exported environment - MAC
+Activate your environment prior to use:
+
+```sh
+conda activate puppy
+```
+
+## Install with conda (arm-64). CURRENTLY IN PROGRESS...
+Installation of PUPpy through conda is currently not available for Mac M1/M2 users (arm64 architecture) due to [MMseqs2](https://github.com/soedinglab/MMseqs2) not being available on conda for arm64. Instead, it is possible to install all dependencies manually, as well as a compatible static version of MMseqs2, with the script below:
+
+```sh
+# Clone PUPpy GitHub directory
+git clone https://github.com/Tropini-lab/PUPpy.git
+
+# Change directory
+cd PUPpy
+
+# Execute arm64 installation script
+chmod +x puppy-arm64_installation.sh
+bash puppy-arm64_installation.sh
+```
+
+
+## Exported environment (x86-64 & linux-64)
 
 You can set up the conda environment to run PUPpy using the YAML definition found in this repository:
 
@@ -69,31 +94,6 @@ cd PUPpy
 conda deactivate
 conda env create -f puppy_env.yml
 conda activate PUPpy
-```
-
-## Manual installation of dependencies - MAC & LINUX
-Or by manually installing dependencies:
-
-- [MMseqs2](https://github.com/soedinglab/MMseqs2)
-- [Pandas](https://github.com/pandas-dev/pandas) >=1.5
-- [BioPython](https://github.com/biopython/biopython)
-- [Dask](https://github.com/dask/dask)
-- [seaborn](https://github.com/mwaskom/seaborn)
-- [matplotlib](https://github.com/matplotlib/matplotlib)
-- [primer3-py](https://libnano.github.io/primer3-py/quickstart.html#installation)
-- [colorama](https://github.com/tartley/colorama)
-
-```sh
-# Create Conda environment
-conda deactivate
-conda create -n puppy python=3.10.6 pyarrow=14.0.1
-conda activate puppy
-
-# Install dependencies
-conda install -y -c bioconda -c conda-forge -c anaconda \
-    mmseqs2 pandas=1.5 primer3-py \
-    biopython dask seaborn matplotlib \
-    colorama
 ```
 
 # Important: before you start
