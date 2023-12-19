@@ -37,21 +37,9 @@ PUPpy-designed primers can be used to:
 
 **PUPpy is currently ONLY available for MacOS and Linux**
 
-## Install with conda - MAC ONLY
+Installation of the puppy package varies depending on the architecture of your computer. To check what you have, open your terminal app and run: ```uname -m```. The architectures currently supported are: 1) osx-64 (Mac Intel chips), arm64 (Mac M1/M2 chips), and linux-64.
 
-NOTE! If you have computer using Apple silicon processors (M1 or M2), you will need to install the puppy package through a terminal using Rosetta. This is because some of the PUPpy dependencies are only available on Intel X86_64 and will thus cause problems when trying to install on ARM64 (M1/M2 architecture). To create a Rosetta terminal, please follow the steps below:
-
-- Choose your terminal app of choice
-- Make sure you quit any open terminal windows (command + Q)
-- Open Finder
-- Navigate to 'Applications'
-- Find your terminal app and right-click
-- Select 'Duplicate'
-- Find the cloned app and rename to 'Rosetta terminal'
-- Right-click the 'Rosetta terminal' app and select 'Get Info'
-- In the 'General' section, check 'Open using Rosetta'
-
-Make sure you open your Rosetta terminal when trying to install PUPpy. To ensure you are running Rosetta you can run ```echo $(arch)```, which should return ```i386```. Once you confirmed this, you can proceed with the installation below:
+## Install with conda (osx-64 & linux-64)
 
 Ensure that the conda-forge and bioconda channels are added prior to installation:
 
