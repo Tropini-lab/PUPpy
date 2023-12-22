@@ -20,18 +20,23 @@ PUPpy-designed primers can be used to:
 
 # Table of contents
 
+- [Phylogenetically Unique Primers in python (PUPpy)](#phylogenetically-unique-primers-in-python-puppy)
+- [Table of contents](#table-of-contents)
 - [Installation](#installation)
-  - [Install with bioconda](#install-with-bioconda)
-  - [Dependencies](#Dependencies)
+  - [Install with conda (x86-64 \& linux-64)](#install-with-conda-x86-64--linux-64)
+  - [Install with conda (arm-64). CURRENTLY IN PROGRESS...](#install-with-conda-arm-64-currently-in-progress)
+  - [Exported environment (x86-64 \& linux-64)](#exported-environment-x86-64--linux-64)
 - [Important: before you start](#important-before-you-start)
 - [How it works](#how-it-works)
 - [Usage](#usage)
-- [Command line options](#command-line-options)
-- [Input](#input)
-- [Output](#output)
-- [Contributors](#contributors)
-- [Citation](#citation)
-- [License](#license)
+    - [1. Genes alignment](#1-genes-alignment)
+    - [2. Primer design](#2-primer-design)
+  - [Command line options](#command-line-options)
+  - [Input](#input)
+  - [Output](#output)
+  - [Contributors](#contributors)
+  - [Citation](#citation)
+  - [License](#license)
 
 # Installation
 
