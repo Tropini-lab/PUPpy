@@ -74,21 +74,9 @@ Activate your environment prior to use:
 conda activate puppy
 ```
 
-## Install with conda (arm-64). CURRENTLY IN PROGRESS...
+## Install with conda (arm-64). 
 
-Installation of PUPpy through conda is currently not available for Mac M1/M2 users (arm64 architecture) due to [MMseqs2](https://github.com/soedinglab/MMseqs2) not being available on conda for arm64. Instead, it is possible to install all dependencies manually, as well as a compatible static version of MMseqs2, with the script below:
-
-```sh
-# Clone PUPpy GitHub directory
-git clone https://github.com/Tropini-lab/PUPpy.git
-
-# Change directory
-cd PUPpy
-
-# Execute arm64 installation script
-chmod +x puppy-arm64_installation.sh
-bash puppy-arm64_installation.sh
-```
+CURRENTLY IN PROGRESS...
 
 ## Exported environment (x86-64 & linux-64)
 
