@@ -4,7 +4,7 @@
   <img src="./images/PUPpy_logo_DigitalSchematic.png" width="500" />
 </p>
 
-PUPpy (`<ins>`**P**`</ins>`hylogenetically `<ins>`**U**`</ins>`nique `<ins>`**P**`</ins>`rimers in `<ins>`**py**`</ins>`thon) is a fully automated pipeline to design taxon-specific primers for any defined bacterial community.
+PUPpy (**P**hylogenetically **U**nique **P**rimers in **py**thon) is a fully automated pipeline to design taxon-specific primers for any defined bacterial community.
 
 PUPpy can design both microbe-specific primers, which selectively amplify individual members of a community, and group-specific primers, which selectively amplify user-selected members.
 
