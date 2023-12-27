@@ -45,8 +45,12 @@ PUPpy-designed primers can be used to:
 Installation of the puppy package varies depending on the architecture of your computer. To check what you have, open your terminal app and run: ``uname -m``. The architectures currently supported are:
 
 1) x86-64 (Mac Intel chips, or emulated)
-2) arm64 (Mac M1/M2 chips)
-3) linux-64
+2) linux-64
+
+We are currently working on making puppy also available on arm64 (Mac M1/M2 chips), but it is not currently available. For more information on how M1/M2 users can emulate the osx-64 architecture (and thus install puppy) please see the links below:
+
+- https://stackoverflow.com/questions/71515117/how-to-set-up-a-conda-osx-64-environment-on-arm-mac
+- https://taylorreiter.github.io/2022-04-05-Managing-multiple-architecture-specific-installations-of-conda-on-apple-M1/
 
 ## Install with conda (x86-64 & linux-64)
 
