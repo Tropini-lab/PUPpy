@@ -47,7 +47,7 @@ Installation of the puppy package varies depending on the architecture of your c
 1) x86-64 (Mac Intel chips, or emulated)
 2) linux-64
 
-We are currently working on making puppy also available on arm64 (Mac M1/M2 chips), but it is not currently available. For more information on how M1/M2 users can emulate the osx-64 architecture (and thus install puppy) please see the links below:
+We are currently working on making puppy also available on arm64 (Mac M1/M2 chips). For more information on how M1/M2 users can emulate the osx-64 architecture (and thus install puppy) please see the links below:
 
 - https://stackoverflow.com/questions/71515117/how-to-set-up-a-conda-osx-64-environment-on-arm-mac
 - https://taylorreiter.github.io/2022-04-05-Managing-multiple-architecture-specific-installations-of-conda-on-apple-M1/
