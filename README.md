@@ -92,7 +92,7 @@ cd PUPpy
 # Create and set up conda environment
 conda deactivate
 conda env create -f puppy_env.yml
-conda activate PUPpy
+conda activate puppy
 ```
 
 # Important: before you start
