@@ -134,7 +134,7 @@ puppy-align -h
 puppy-primers -h
 ```
 
-### 1. Genes alignment
+### 1. Genes alignment (puppy-align)
 
 The alignment step must always be run first for any **new** defined bacterial community.
 
