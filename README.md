@@ -136,7 +136,7 @@ If installed with **conda**, you do not need to specify the path to the scripts.
 puppy-align -h
 ```
 
-If installed with the **exported environment**, you must to specify the exact path to the scripts. For example:
+If installed with the **exported environment**, you must always specify the exact path when running scripts. For example:
 
 ```sh
 ./scripts/puppy-align -h
