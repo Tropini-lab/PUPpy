@@ -29,14 +29,14 @@ PUPpy-designed primers can be used to:
 - [Important: before you start](#important-before-you-start)
 - [How it works](#how-it-works)
 - [Usage](#usage)
-    - [1. Genes alignment](#1-genes-alignment)
-    - [2. Primer design](#2-primer-design)
+  - [1. Genes alignment](#1-genes-alignment)
+  - [2. Primer design](#2-primer-design)
   - [Command line options](#command-line-options)
   - [Input](#input)
   - [Output](#output)
-  - [Contributors](#contributors)
-  - [Citation](#citation)
-  - [License](#license)
+- [Contributors](#contributors)
+- [Citation](#citation)
+- [License](#license)
 
 # Installation
 
