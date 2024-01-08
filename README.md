@@ -15,7 +15,7 @@ PUPpy-designed primers can be used to:
 3) Any other primer uses
 
 <p align="center">
-  <img src="./images/111223_PUPpy-Figure_1B.png" width="980" />
+  <img src="./images/PUPpy-PrimerSchematic.png" width="980" />
 </p>
 
 # Table of contents
