@@ -30,7 +30,7 @@ PUPpy-designed primers can be used to:
 - [How it works](#how-it-works)
 - [Usage](#usage)
   - [1. Genes alignment (puppy-align)](#1-genes-alignment-puppy-align)
-  - [2. Primer design (puppy-primers)](#2-primer-design)
+  - [2. Primer design (puppy-primers)](#2-primer-design-puppy-primers)
   - [Command line options](#command-line-options)
   - [Input](#input)
   - [Output](#output)
@@ -144,7 +144,7 @@ puppy-align --pr <PATH>/test/intended_input -nt <PATH>/test/unintended_input -o 
 
 This command creates the output file ``<PATH>/test/alignment_output/ResultDB.tsv`` which can be used as input for the primer design command (step 2). The command `puppy-primers` can be run as many times as desired without having to rerun `puppy-align` again, as long as the bacterial community remains unchanged.
 
-### 2. Primer design
+### 2. Primer design (puppy-primers)
 
 The second step consists in designing taxon-specific primers unique to individual members or shared by groups in the bacterial community.
 
