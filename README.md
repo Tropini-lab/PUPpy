@@ -95,6 +95,12 @@ conda env create -f puppy_env.yml
 conda activate puppy
 ```
 
+Lastly, change the permissions to be able to execute the PUPpy scripts:
+
+```sh
+chmod +x ./scripts/*
+```
+
 # Important: before you start
 
 1) **PUPpy was developed to design taxon-specific primers in DEFINED bacterial communities.**
@@ -116,10 +122,24 @@ PUPpy takes any number of bacterial CDS files as input. Input CDS files are alig
 
 # Usage
 
-**IMPORTANT:** If installing by cloning the GitHub directory, make sure you are in the **scripts** directory any time you are running PUPpy scripts or it won't work.
+**Always activate your conda environment before running PUPpy.**
 
+```sh
+conda activate puppy
 ```
-cd ./PUPpy/scripts
+
+**IMPORTANT:** The syntax to run PUPpy varies depending on the installation mode.
+
+If installed with **conda**, you do not need to specify the path to the scripts. For example:
+
+```sh
+puppy-align -h
+```
+
+If installed with the **exported environment**, you must to specify the exact path to the scripts. For example:
+
+```sh
+./scripts/puppy-align -h
 ```
 
 PUPpy operates in 2 main steps:
