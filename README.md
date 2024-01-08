@@ -111,7 +111,7 @@ conda activate puppy
 PUPpy takes any number of bacterial CDS files as input. Input CDS files are aligned against each other using [MMseqs2](https://github.com/soedinglab/MMseqs2) and then parsed to identify candidate unique or group-specific genes within the defined bacterial community provided by the user. Taxon-specific primers are then designed using [Primer3](https://primer3.org/manual.html) and provided as output in a tsv file.
 
 <p align="center">
-  <img src="./images/PUPpy_schematic.png" height="700" />
+  <img src="./images/111223_PUPpy-Figure_1A.png" height="700" />
 </p>
 
 # Usage
