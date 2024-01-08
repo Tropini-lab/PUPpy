@@ -128,6 +128,11 @@ PUPpy takes any number of bacterial CDS files as input. Input CDS files are alig
 conda activate puppy
 ```
 
+PUPpy operates in 2 main steps:
+
+1) ``puppy-align`` - performs local pairwise sequence alignment of all the input genes against each other, and
+2) ``puppy-primers`` - designs taxon-specific primers based on user-determined parameters.
+
 **IMPORTANT:** The syntax to run PUPpy varies depending on the installation mode.
 
 If installed with **conda**, you do not need to specify the path to the scripts. For example:
@@ -141,11 +146,6 @@ If installed with the **exported environment**, you must always specify the exac
 ```sh
 ./scripts/puppy-align -h
 ```
-
-PUPpy operates in 2 main steps:
-
-1) ``puppy-align`` - performs local pairwise sequence alignment of all the input genes against each other, and
-2) ``puppy-primers`` - designs taxon-specific primers based on user-determined parameters.
 
 Detailed usage information, including all the primer design parameters, can be seen by running ``-h`` or ``--help`` at each step.
 
