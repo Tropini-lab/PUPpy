@@ -29,7 +29,7 @@ PUPpy-designed primers can be used to:
 - [Important: before you start](#important-before-you-start)
 - [How it works](#how-it-works)
 - [Usage](#usage)
-  - [1. Genes alignment](#1-genes-alignment-(puppy-align))
+  - [1. Genes alignment (puppy-align)](#1-genes-alignment-puppy-align)
   - [2. Primer design (puppy-primers)](#2-primer-design)
   - [Command line options](#command-line-options)
   - [Input](#input)
