@@ -97,7 +97,7 @@ conda activate puppy
 
 Lastly, change the permissions to be able to execute the PUPpy scripts:
 
-```sh
+```
 chmod +x ./scripts/*
 ```
 
@@ -164,7 +164,7 @@ Remember to specify the **path** to the script if you installed PUPpy from the e
 
 The alignment step must always be run first for any **new** defined bacterial community.
 
-```python
+```
 puppy-align --pr <PATH>/test/INPUT_primerTarget -nt <PATH>/test/INPUT_nonTarget -o <PATH>/test/OUTPUT_puppy-align
 ```
 
@@ -197,7 +197,7 @@ puppy-primers -p group -pr <PATH>/test/INPUT_primerTarget -i <PATH>/test/OUTPUT_
 ## GUI execution
 Alternatively, you can execution both scripts from a graphical user interface (GUI). The GUI is not available on computing clusters and can be started with the following command:
 
-```sh
+```
 puppy-GUI
 ```
 Remember to run ```<PATH>/puppy-GUI``` if you installed PUPpy from the exported environment. 
