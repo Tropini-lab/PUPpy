@@ -44,6 +44,8 @@ PUPpy-designed primers can be used to:
 
 **PUPpy is currently ONLY available for MacOS and Linux**
 
+**Installing PUPpy currently REQUIRES 1) [Conda](https://docs.conda.io/projects/miniconda/en/latest/) AND 2) pip**. Make sure both are installed prior to following the installation instructions below.
+
 Installation of the puppy package varies depending on the architecture of your computer. To check what you have, open your terminal app and run: ``uname -m``. The architectures currently supported are:
 
 1) x86-64 (Mac Intel chips, or emulated)
