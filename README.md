@@ -210,7 +210,7 @@ The GUI also consists of 2 parts, as shown below:
 
 - The left half must be run first, as it executes the `puppy-align` script with modifiable parameters.
 - The right half can be run second and it executes the `puppy-primers` script.
-- Primer design parameters can be modified by clicking on the expandable "Primer Design Parameters" button.
+  - Primer design parameters can be modified by clicking on the expandable "Primer Design Parameters" button.
 - Both scripts can be executed by clicking on the "Run" button and the help functions are available by clicking on the "Help" buttons.
 
 All command-line parameters are also available in the GUI.
