@@ -133,8 +133,6 @@ PUPpy operates in 2 main steps:
 1) ``puppy-align`` - performs local pairwise sequence alignment of all the input genes against each other, and
 2) ``puppy-primers`` - designs taxon-specific primers based on user-determined parameters.
 
-PUPpy can be execute either from **command-line** OR from a **graphical user interface (GUI)**
-
 **IMPORTANT:** The syntax to run PUPpy varies depending on the installation mode.
 
 If installed with **conda**, you do not need to specify the path to the scripts. For example:
@@ -148,6 +146,10 @@ If installed with the **exported environment**, you must always specify the exac
 ```sh
 ./scripts/puppy-align -h
 ```
+
+PUPpy can be executed either from **command-line** OR from a **graphical user interface (GUI)**
+
+## Command-line execution
 
 Detailed usage information, including all the primer design parameters, can be seen by running ``-h`` or ``--help`` at each step.
 
@@ -185,6 +187,18 @@ By default, ``puppy-primers`` outputs **unique** primers. To design **group** pr
   - This is a shortcut if you need to run ``puppy-primers`` multiple times on the same community and it provides the same output as using ``ResultDB.tsv``. The only difference is that you can only use ``UniqueGenesList.tsv`` after having run ``puppy-primers`` at least once before, while ``ResultDB.tsv`` must be used immediately after ``puppy-align``.
 
 You can see the default primer design parameters used by Primer3 by running ``puppy-primers -h``.
+
+## GUI execution
+Alternatively, you can execution both scripts from a graphical user interface (GUI). The GUI is not available on computing clusters and can be started with the following command:
+
+```sh
+puppy-GUI
+```
+Remember to run ```<PATH>/puppy-GUI``` if you installed PUPpy from the exported environment. 
+
+The GUI consists of 2 
+
+All command-line parameters are also available in the GUI.
 
 ## Command line options
 
