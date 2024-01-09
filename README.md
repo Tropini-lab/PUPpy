@@ -292,7 +292,7 @@ Examples of accepted CDS filenames:
 
 # Output
 
-The key output of ``puppy-align`` is the file ``ResultDB.tsv``, which stores exhaustive information about all the local pairwise alignments. To see an example of this output file, go to: ``./test/alignment_output/ResultDB.tsv`` in this repository.
+The key output of ``puppy-align`` is the file ``ResultDB.tsv``, which stores exhaustive information about all the local pairwise alignments. To see an example of this output file, go to: ``test/OUTPUT_puppy-align/ResultDB.tsv`` in this repository.
 
 The outputs of ``puppy-primers`` vary depending on which mode is run:
 
@@ -304,7 +304,7 @@ The outputs of ``puppy-primers`` vary depending on which mode is run:
 - **``UniquePrimerTable.tsv``** - output table with the taxon-specific primers designed and their respective parameters
 - ``primer3_files/`` - folder containing the individual primer3 outputs of the primers in ``UniquePrimerTable.tsv``
 
-Examples of these outputs can be seen in this repository at ``./test/unique_output/``
+Examples of these outputs can be seen in this repository at ``OUTPUT_puppy-primers_unique``
 
 **Group** mode:
 
@@ -332,7 +332,7 @@ Examples of these outputs can be seen in this repository at ``./test/unique_outp
   - Only a portion of the candidate gene (i.e. <100% query coverage) aligns to at least one target gene;
   - The candidate gene aligns does not align to the entire sequence of at least one target gene.
 
-Examples of these outputs can be seen in this repository at ``./test/group_output/``
+Examples of these outputs can be seen in this repository at ``OUTPUT_puppy-primers_group``
 
 ## Contributors
 
