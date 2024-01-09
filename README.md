@@ -202,13 +202,19 @@ puppy-GUI
 ```
 Remember to run ```<PATH>/puppy-GUI``` if you installed PUPpy from the exported environment. 
 
-The GUI consists of 2 
+The GUI also consists of 2 steps, as shown below:
+
+<p align="center">
+  <img src="./images/PUPpy_GUI.png" width="500" />
+</p>
+
+The left half must be run first, as it executes the `puppy-align` script with modifiable parameters. The right half can be run second and it executes the `puppy-primers` script. Primer design parameters can be modified by clicking on the expandable "Primer Design Parameters" button. Both scripts can be executed by clicking on the "Run" button and the help functions are available by clicking on the "Help" buttons.
 
 All command-line parameters are also available in the GUI.
 
-## Command line options
+## PUPpy parameters
 
-Command line options for **``puppy-align``**
+Parameters for **``puppy-align``**
 
 ```
 General:
@@ -219,7 +225,7 @@ General:
   --identity [X]		Identity thresholds to report sequence alignments by MMseqs2 (default '0.3')
 ```
 
-Command line options for **``puppy-primers``**
+Parameters for **``puppy-primers``**
 
 ```
 General:
@@ -245,7 +251,7 @@ Primer3 parameters:
   --GC_clamp [X]		Primer GC clamp (default '1')
 ```
 
-## Input
+# Input
 
 Currently, PUPpy supports CDS files generated from any of these 3 approaches: [prokka](https://github.com/tseemann/prokka), [RAST](https://rast.nmpdr.org/) and/or downloaded from the [NCBI](https://www.ncbi.nlm.nih.gov/assembly). This is necessary because PUPpy only recognises FASTA headers formats from these 3 programs.
 
@@ -281,7 +287,7 @@ Examples of accepted CDS filenames:
 - ``B_theta_VPI5482_cds.fna``
 - ``Bacteroides_thetaiotaomicron_VPI_5482_cds_from_genomic.fna``
 
-## Output
+# Output
 
 The key output of ``puppy-align`` is the file ``ResultDB.tsv``, which stores exhaustive information about all the local pairwise alignments. To see an example of this output file, go to: ``./test/alignment_output/ResultDB.tsv`` in this repository.
 
