@@ -133,6 +133,8 @@ PUPpy operates in 2 main steps:
 1) ``puppy-align`` - performs local pairwise sequence alignment of all the input genes against each other, and
 2) ``puppy-primers`` - designs taxon-specific primers based on user-determined parameters.
 
+PUPpy can be execute either from **command-line** OR from a **graphical user interface (GUI)**
+
 **IMPORTANT:** The syntax to run PUPpy varies depending on the installation mode.
 
 If installed with **conda**, you do not need to specify the path to the scripts. For example:
