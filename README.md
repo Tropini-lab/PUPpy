@@ -176,8 +176,8 @@ The second step consists in designing taxon-specific primers unique to individua
 
 ``puppy-primers`` **requires** 2 arguments as input:
 
-- ``-pr`` or ``--PRIMERTARGET`` - the same folder as `puppy-align`, containing the CDS files of the organisms for which you want to design taxon-specific primers.
-- ``-i`` or ``--input`` - either the alignment file, ``ResultDB.tsv`` or ``UniqueGenesList.tsv``
+- ``-pr`` or ``--PRIMERTARGET``: the same folder as `puppy-align`, containing the CDS files of the organisms for which you want to design taxon-specific primers.
+- ``-i`` or ``--input``: either the alignment file, ``ResultDB.tsv`` or ``UniqueGenesList.tsv``
 
   - ``UniqueGenesList.tsv`` is a file created by running ``puppy-primers`` on **unique** mode, containing the list of unique genes found for the organisms listed in ``--target_species``.
   - This is a shortcut if you need to run ``puppy-primers`` multiple times on the same community and it provides the same output as using ``ResultDB.tsv``. The only difference is that you can only use ``UniqueGenesList.tsv`` after having run ``puppy-primers`` at least once before, while ``ResultDB.tsv`` must be used immediately after ``puppy-align``.
