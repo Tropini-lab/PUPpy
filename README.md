@@ -158,25 +158,21 @@ puppy-align -h
 puppy-primers -h
 ```
 
-### 1. Genes alignment (puppy-align)
+Remember to specify the **path** to the script if you installed PUPpy from the exported environment! 
+
+### 1. Gene alignment (puppy-align)
 
 The alignment step must always be run first for any **new** defined bacterial community.
 
 ```python
-puppy-align --pr <PATH>/test/intended_input -nt <PATH>/test/unintended_input -o <PATH>/test/alignment_output
+puppy-align --pr <PATH>/test/INPUT_primerTarget -nt <PATH>/test/INPUT_nonTarget -o <PATH>/test/OUTPUT_puppy-align
 ```
 
-This command creates the output file ``<PATH>/test/alignment_output/ResultDB.tsv`` which can be used as input for the primer design command (step 2). The command `puppy-primers` can be run as many times as desired without having to rerun `puppy-align` again, as long as the bacterial community remains unchanged.
+This command creates the output file ``<PATH>/test/OUTPUT_puppy-align/ResultDB.tsv`` which can be used as input for the primer design command (step 2). The command `puppy-primers` can be run as many times as desired without having to rerun `puppy-align` again, as long as the bacterial community remains unchanged.
 
 ### 2. Primer design (puppy-primers)
 
 The second step consists in designing taxon-specific primers unique to individual members or shared by groups in the bacterial community.
-
-```
-puppy-primers -pr <PATH>/test/intended_input -i <PATH>/test/alignment_output/ResultDB.tsv -o <PATH>/test/unique_output
-```
-
-By default, ``puppy-primers`` outputs **unique** primers. To design **group** primers, add the argument ``-p group`` to the code above.
 
 ``puppy-primers`` **requires** 2 arguments as input:
 
@@ -185,8 +181,18 @@ By default, ``puppy-primers`` outputs **unique** primers. To design **group** pr
 
   - ``UniqueGenesList.tsv`` is a file created by running ``puppy-primers`` on **unique** mode, containing the list of unique genes found for the organisms listed in ``--target_species``.
   - This is a shortcut if you need to run ``puppy-primers`` multiple times on the same community and it provides the same output as using ``ResultDB.tsv``. The only difference is that you can only use ``UniqueGenesList.tsv`` after having run ``puppy-primers`` at least once before, while ``ResultDB.tsv`` must be used immediately after ``puppy-align``.
+ 
+By default, ``puppy-primers`` outputs **unique** primers for each member in the `INPUT_primerTarget` folder. 
 
-You can see the default primer design parameters used by Primer3 by running ``puppy-primers -h``.
+```
+puppy-primers -pr <PATH>/test/INPUT_primerTarget -i <PATH>/test/OUTPUT_puppy-align/ResultDB.tsv -o <PATH>/test/OUTPUT_puppy-primers_unique
+```
+
+Alternatively, it is possible to design **group** primers by adding the argument ``-p group`` to the code above. This will instruct PUPpy to design primer pairs that amplify all members in the `INPUT_primerTarget` folder.
+
+```
+puppy-primers -p group -pr <PATH>/test/INPUT_primerTarget -i <PATH>/test/OUTPUT_puppy-align/ResultDB.tsv -o <PATH>/test/OUTPUT_puppy-primers_group
+```
 
 ## GUI execution
 Alternatively, you can execution both scripts from a graphical user interface (GUI). The GUI is not available on computing clusters and can be started with the following command:
