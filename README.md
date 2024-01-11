@@ -169,7 +169,7 @@ Remember to specify the **path** to the script if you installed PUPpy from the e
 The alignment step must always be run first for any **new** defined bacterial community.
 
 ```
-puppy-align --pr <PATH>/test/INPUT_primerTarget -nt <PATH>/test/INPUT_nonTarget -o <PATH>/test/OUTPUT_puppy-align
+puppy-align -pr <PATH>/test/INPUT_primerTarget -nt <PATH>/test/INPUT_nonTarget -o <PATH>/test/OUTPUT_puppy-align
 ```
 
 This command creates the output file ``<PATH>/test/OUTPUT_puppy-align/ResultDB.tsv`` which can be used as input for the primer design command (step 2). The command `puppy-primers` can be run as many times as desired without having to rerun `puppy-align` again, as long as the bacterial community remains unchanged.
