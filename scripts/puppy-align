@@ -1,0 +1,304 @@
+#!/usr/bin/env python3
+
+# Script: puppy-align
+# Part of PUPpy distribution.
+# Many-against-many pairwise local sequence alignment of all microbial genes in input microbial community.
+
+# Author = Hans Ghezzi
+# Credits = Hans Ghezzi
+# Licence = GPL3
+# Version = 1.0.0
+# Maintainer = Hans Ghezzi
+# Email = hans.ghezzi@gmail.com
+# Status = Development
+
+
+# Load essential libraries
+import os
+import sys
+import argparse
+
+######################################################## flags ###########################################################################
+ascii_art = """
+                                                                                
+                 @    @ @ @                  @     @                            
+              @       @                      @       @                          
+           @         @                         @       @                        
+        @          @                             @       @                      
+     @            @                               @         @                   
+   @            @                                  @           @                
+ @             @                                                 @              
+@             @       @@@@@@             @@@@@@     @             ,             
+             @        @@@@@@@           @@@@@@@     @                           
+ @           @        @@@@@@   @@@@@@@    @@@@                   @              
+   @         @          @@     @@@@@@      @                   @                
+     @        @        @          @          @      @        @  @   @  @   @    
+        @      @      @                       @     @      @    @      @@  @@   
+             @@@                               @   @   @        @   @@  @     @@
+      @@@@@@        @               @@@@@       @       @  @@   @@    @  @    @ 
+      @@@@@@@@@                @@@@@@@@         @@@@/    ( @ @@@ @   @  @       
+        @@@@@@@@@@@@          @@@@@@@@@         @@@@@    @ @ @   @   @@  @      
+       @@@@@@@@              @        @        @       @ @ @@    @  @           
+       @@@@@@          @@ @@          (@ @@@@                 
+
+ASCII art designed with manytools.org from puppy logo                  
+"""
+
+
+parser = argparse.ArgumentParser(
+    prog="PROG",
+    formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    description=f"""
+    PUPpy: A Phylogenetically Unique Primer pipeline in PYthon for high resolution classification of defined microbial communities. Version 1.0
+    """,
+)
+
+print(ascii_art)
+
+# Setting up flags in python
+parser.add_argument(
+    "-pr",
+    "--primerTarget",
+    help="Directory with the CDS files of the targets in the defined microbial community, for which primers should be designed",
+    default="",
+    required=True,
+)
+
+parser.add_argument(
+    "-nt",
+    "--nonTarget",
+    help="Directory with CDS files of non targets in the defined microbial community, for specificity checks",
+    default="",
+)
+
+parser.add_argument(
+    "-o",
+    "--outdir",
+    help="Relative path to the output folder",
+    default="Align_OUT",
+)
+parser.add_argument(
+    "-id",
+    "--identity",
+    help="Identity thresholds to report sequence alignments by MMseqs2",
+    default=0.3,
+    type=float,
+)
+
+args = parser.parse_args()
+
+# Import rest of library
+import subprocess
+import pandas as pd
+from colorama import init
+from colorama import Fore, Style
+import glob
+import shutil
+import logging
+
+######################################################## variables ###########################################################################
+
+# Path to folder with CDS files
+cds_intended = os.path.abspath(args.primerTarget)
+cds_unintended = os.path.abspath(args.nonTarget if args.nonTarget else '')
+
+# Path to output directory
+output = os.path.abspath(args.outdir)
+
+# Check if output folder exists. If it does, exit the program, otherwise create it.
+while True:
+    if os.path.exists(output):
+    # Get user input (yes or no)
+        user_input = input(f"Do you want to OVERWRITE the data in the existing '{args.outdir}' output directory? (yes/no): ").strip().lower()
+
+        # Check the user's response
+        if user_input == "yes":
+            # Overwrite output directory
+            print("Overwriting output directory...")
+            directory_to_overwrite = output
+            try:
+                # Remove the existing directory and its contents
+                shutil.rmtree(directory_to_overwrite)
+            except FileNotFoundError:
+                # Handle the case where the directory doesn't exist
+                pass
+
+            # Recreate the directory (an empty directory)
+            try:
+                os.makedirs(directory_to_overwrite)
+            except OSError as e:
+                # Handle any errors that occur while creating the directory
+                print("Error creating directory: " + str(e))
+            break #Exit loop if user provides valid input
+
+        elif user_input == "no":
+            # User chose not to perform the task
+            print("Please choose a different output directory name. Exiting...")
+            exit() #Exit loop if user provides valid input
+        else:
+            # Handle invalid input
+            print("Invalid input. Please enter 'yes' or 'no'.")
+
+    else:
+        os.mkdir(output)
+        break #Exit loop if output dir doesn't exist initially
+
+# Configure logging
+# Define  log file name
+log_file = 'align_logfile.txt'
+# Specify log file output dir
+log_file_path = os.path.join(output, log_file)
+
+logging.basicConfig(level=logging.DEBUG,
+                    format='%(asctime)s - %(levelname)s - %(message)s',
+                    handlers=[
+                        logging.FileHandler(log_file_path),
+                        logging.StreamHandler(sys.stdout)
+                    ])
+
+######################################################## Functions ###########################################################################
+
+def rename_fasta(f, species_name):
+    """
+    Function to modify all the FASTA headers in each input CDS file.
+    """
+    with open(f, "r") as f1:
+        data = f1.readlines()
+        new_lines = rename_fasta_headers(data, species_name)
+
+    with open(f, "w") as f2:
+        f2.writelines(new_lines)
+
+
+def rename_fasta_headers(list_of_lines, species_name):
+    """
+    Function to select FASTA header lines to which apply name changes
+    """
+    # run for loop to parse every line and change the headers
+    new_lines = []
+    for line in list_of_lines:
+        if line.startswith(">"):
+            new_lines.append(change_header(line, species_name))
+        else:
+            new_lines.append(line)
+    return new_lines
+
+
+def change_header(line, name):
+    """
+    Function to rename FASTA headers to include species name.
+    """
+    
+    # Check if the name is already in the line
+    if name in line:
+        return line
+
+    # Split the header based on different formats
+    if ".peg." in line:
+        parts = line.split(".peg.")
+        new_line = f">lcl|{name}-{parts[0].split('|')[1]}_cds_{parts[1]}"
+
+    elif "_cds" in line:
+        parts = line.split("_cds")
+        new_line = f">lcl|{name}-{parts[0].split('|')[1]}_cds{parts[1]}"
+    else:
+    # Handle the case where neither .peg. nor _cds is in the line
+        if '|' in line:
+            parts = line.split('|')
+            new_line = f">lcl|{name}-prokka_cds_{parts[1]}"
+        else:
+            # Handle the case where '|' is not present in the line
+            parts = line.split('>')
+            new_line = f">lcl|{name}-prokka_cds_{parts[1]}"
+
+    return new_line
+
+def run_mmseqs2(output, cds_intended, cds_unintended, identity):
+    # Concatenate input CDS files
+    with open(f"{output}/concatenated_CDSes.fna", "w") as outfile:
+        for cds_dir in [cds_intended, cds_unintended]:
+            if cds_dir and os.listdir(cds_dir):
+                for filename in glob.glob(f"{cds_dir}/*.fna"):
+                    with open(filename, "r") as infile:
+                        outfile.write(infile.read())
+   
+    # Run MMseqs2 commands and log their output
+    mmseqs2_commands = [
+        ["mmseqs", "createdb", f"{output}/concatenated_CDSes.fna", f"{output}/QueryDB"],
+        ["mmseqs", "createdb", f"{output}/concatenated_CDSes.fna", f"{output}/TargetDB"],
+        ["mmseqs", "createindex", f"{output}/TargetDB", f"{output}/tmp", "--search-type", "3"],
+        ["mmseqs", "search", "-a", "--min-seq-id", str(identity), f"{output}/QueryDB", f"{output}/TargetDB", f"{output}/ResultDB", f"{output}/tmp"],
+        ["mmseqs", "convertalis", f"{output}/QueryDB", f"{output}/TargetDB", f"{output}/ResultDB", f"{output}/ResultDB.tsv", "--format-output", "query,target,qlen,tlen,alnlen,qstart,qend,tstart,tend,pident,qcov,tcov,evalue", "--search-type", "3"]
+    ]   
+
+    success = True
+    for command in mmseqs2_commands:
+        process = subprocess.run(command, text=True)
+        if process.returncode != 0:
+            success = False
+            break
+
+    # Move and clean up files
+    shutil.move(f"{output}/tmp", f"{output}/mmseqs_tmp")
+    os.makedirs(f"{output}/tmp", exist_ok=True)
+    for f in glob.glob(f"{output}/Query*") + glob.glob(f"{output}/Target*") + glob.glob(f"{output}/Result*") + glob.glob(f"{output}/*concat*"):
+        shutil.move(f, f"{output}/tmp")
+    shutil.move(f"{output}/tmp/ResultDB.tsv", output)
+
+    # Add headers to ResultDB.tsv
+    headers = [
+        "query",
+        "target",
+        "qlen",
+        "tlen",
+        "alnlen",
+        "qstart",
+        "qend",
+        "tstart",
+        "tend",
+        "pident",
+        "qcov",
+        "tcov",
+        "evalue",
+    ]
+    result_file = f"{output}/ResultDB.tsv"
+    with open(result_file, 'r') as original: data = original.read()
+    with open(result_file, 'w') as modified: modified.write('\t'.join(headers) + '\n' + data)
+
+    return success
+
+##################################################### RENAME FASTA HEADERS #################################################################
+
+# Execute function 'rename_fasta' to rename FASTA headers in input CDS files.
+logging.info("Renaming FASTA headers of input CDS files")
+
+# List of directories with files to rename
+directories = [cds_intended, cds_unintended]
+
+for directory in directories:
+
+    # Get list of files in current directory
+    cds_filenames = os.path.join(directory, "*.fna")
+
+    for f in glob.glob(cds_filenames):
+        # Extract base name of the file
+        name = os.path.basename(f)
+        # Find index of "_cds" in filename
+        i = name.index("_cds")
+        # Function to rename file FASTA headers
+        rename_fasta(f, name[:i])
+
+##################################################### Alignments with MMseqs2 #################################################################
+
+# Run MMseqs2 to align genes and capture output
+logging.info("Aligning genes with MMseqs2. This might take a while.")
+
+# Call the function with arguments
+success = run_mmseqs2(output, cds_intended, cds_unintended, args.identity)
+
+# [Conditional 'Done' message]
+if success and os.path.exists(f"{output}/ResultDB.tsv"):
+    logging.info(f"Everything went smoothly! Check the directory {output} for output files!")
+    print(Fore.GREEN + "Done!" + Style.RESET_ALL)
+else:
+    print(Fore.RED + "An error occurred. Please check the log for details." + Style.RESET_ALL)
