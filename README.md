@@ -277,6 +277,8 @@ Examples of accepted FASTA headers are shown here:
 >fig|6666666.855680.peg.1
 ```
 
+**Note**: Currently, PUPpy do not supports any "." (dots) in CDS filenames except for the file extension.
+
 Moreover, input CDS filenames must meet the following 3 requirements to be used by PUPpy:
 
 1) Filename must **start** with a unique identifier that allows you to distinguish organisms in the defined community.
