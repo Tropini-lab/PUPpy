@@ -131,6 +131,12 @@ PUPpy takes any number of bacterial CDS files as input. Input CDS files are alig
 ```sh
 conda activate puppy
 ```
+**Check that you are using the most recent PUPpy version and update if needed**
+
+```sh
+conda list puppy # Check version
+conda update puppy # Update puppy package
+```
 
 PUPpy operates in 2 main steps:
 
