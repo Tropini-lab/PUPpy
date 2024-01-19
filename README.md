@@ -266,7 +266,8 @@ Primer3 parameters:
 
 # Input
 
-**IMPORTANT: CDS files in your input folder are permanently modified during both puppy-align and puppy-primers execution. Always duplicate your input folder to keep an original copy of your files in case something you need to re-run the scripts from scratch.**
+**IMPORTANT: CDS files in your input folder are permanently modified during both ``puppy-align`` and ``puppy-primers`` execution. 
+Always duplicate your input folder to keep an original copy of your files in case something you need to re-run the scripts from scratch.**
 
 Currently, PUPpy supports CDS files generated from any of these 3 approaches: [prokka](https://github.com/tseemann/prokka), [RAST](https://rast.nmpdr.org/) and/or downloaded from the [NCBI](https://www.ncbi.nlm.nih.gov/assembly). This is necessary because PUPpy only recognises FASTA headers formats from these 3 programs.
 
