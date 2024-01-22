@@ -80,7 +80,7 @@ conda activate puppy
 
 ## Install with conda (Windows). 
 
-Windows users must install a Windows Subsystem for Linux, such as (Ubuntu)[https://canonical-ubuntu-wsl.readthedocs-hosted.com/en/latest/], and can then follow the same instructions above to install PUPpy.
+Windows users must install a Windows Subsystem for Linux, such as [Ubuntu](https://canonical-ubuntu-wsl.readthedocs-hosted.com/en/latest/), and can then follow the same instructions above to install PUPpy.
 
 ## Exported environment (x86-64 & linux-64)
 
