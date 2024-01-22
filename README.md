@@ -24,7 +24,7 @@ PUPpy-designed primers can be used to:
 - [Table of contents](#table-of-contents)
 - [Installation](#installation)
   - [Install with conda (x86-64 \& linux-64)](#install-with-conda-x86-64--linux-64)
-  - [Install with conda (arm-64). CURRENTLY IN PROGRESS...](#install-with-conda-arm-64-currently-in-progress)
+  - [Install with conda (Windows)](#install-with-conda-Windows)
   - [Exported environment (x86-64 \& linux-64)](#exported-environment-x86-64--linux-64)
 - [Important: before you start](#important-before-you-start)
 - [How it works](#how-it-works)
@@ -42,7 +42,7 @@ PUPpy-designed primers can be used to:
 
 # Installation
 
-**PUPpy is currently ONLY available for MacOS and Linux**
+**PUPpy is currently ONLY available for MacOS and Linux. Windows user can still execute PUPpy with a Windows Subsystem for Linux (WSL) such as Ubuntu**
 
 **Installing PUPpy currently REQUIRES 1) [Conda](https://docs.conda.io/projects/miniconda/en/latest/) AND 2) pip**. Make sure both are installed prior to following the installation instructions below.
 
@@ -78,9 +78,9 @@ Activate your environment prior to use:
 conda activate puppy
 ```
 
-## Install with conda (arm-64). 
+## Install with conda (Windows). 
 
-CURRENTLY IN PROGRESS...
+Windows users must install a Windows Subsystem for Linux, such as (Ubuntu)[https://canonical-ubuntu-wsl.readthedocs-hosted.com/en/latest/], and can then follow the same instructions above to install PUPpy.
 
 ## Exported environment (x86-64 & linux-64)
 
@@ -220,6 +220,7 @@ The GUI also consists of 2 parts, as shown below:
 
 - The left half must be run first, as it executes the `puppy-align` script with modifiable parameters.
 - The right half can be run second and it executes the `puppy-primers` script.
+  - Input fields are automatically populated after running `puppy-align`, but you can change them based on your needs.
   - Primer design parameters can be modified by clicking on the expandable "Primer Design Parameters" button.
 - Both scripts can be executed by clicking on the "Run" button and the help functions are available by clicking on the "Help" buttons.
 
