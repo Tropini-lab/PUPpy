@@ -1,0 +1,222 @@
+---
+title: "Script to investigate multi-mapping in shotgun sequencing. Related to Figure 5 of the PUPpy paper."
+output: html_document
+date: "2023-07-14"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+```{r}
+# Load libraries
+library(tidyverse)
+library(readxl)
+library(ggpubr)
+```
+
+
+```{r}
+# Load data
+mappingData <- read_excel("PUPpy_Figure-5_multiMapping.xlsx")
+glimpse(mappingData) 
+
+# Re-level group factor
+mappingData$Kraken_LCA <- factor(mappingData$Kraken_LCA,                 
+                         levels = c("Enterocloster", 
+                                    "Bacteroides thetaiotaomicron", 
+                                    "Escherichia coli K-12"))
+# Mutate data type to double for selected columns
+mappingData <- mappingData %>% 
+  mutate(
+    expected_readAbundance = as.double(expected_readAbundance),
+    LCA_RA = as.double(LCA_RA)
+  )
+
+glimpse(mappingData)
+
+# Compare how many reads are successfully assigned at the LCA level compared to how many were generated in silico
+statMappingDataLCA <- mappingData %>% 
+  filter(sample == "inSilico") %>% 
+  group_by(Kraken_LCA, sample, sampleMethod, sampleType) %>% 
+  summarise(
+    KRAKEN_readAbund = mean(LCA_RA),
+    expected_LCA_readAbund = sum(expected_readAbundance),
+    LCA_difference = KRAKEN_readAbund - expected_LCA_readAbund,
+    LCA_ratio = KRAKEN_readAbund/expected_LCA_readAbund
+  )
+
+# Compare how many reads are successfully assigned at the isolate level compared to how many were generated in silico
+statMappingDataIsolate <- mappingData %>% 
+  filter(sample == "inSilico") %>% 
+  group_by(bacterium, sample, sampleMethod, sampleType,Kraken_LCA) %>% 
+  summarise(
+    KRAKEN_readAbund = as.double(Kraken_RA),
+    expected_Isolate_readAbund = expected_readAbundance,
+    Isolate_difference = KRAKEN_readAbund - expected_Isolate_readAbund,
+    Isolate_ratio = KRAKEN_readAbund/expected_Isolate_readAbund
+  )
+
+# Relevel group factor
+statMappingDataIsolate$bacterium <- factor(statMappingDataIsolate$bacterium,                 
+                         levels = c("E_bolteae_ATCC_BAA613", 
+                                    "E_citroniae_WAL_17108", 
+                                    "E_clostridioformis_WAL_7855",
+                                    "Bacteroides_thetaiotaomicron_VPI_5482", 
+                                    "Bacteroides_thetaiotaomicron_3731", 
+                                    "Bacteroides_thetaiotaomicron_7330",
+                                    "Escherichia_coli_BW25113", 
+                                    "Escherichia_coli_DH10B", 
+                                    "Escherichia_coli_MC4100","
+                                    Escherichia_coli_MG1655")
+                         )
+
+glimpse(statMappingDataIsolate)
+
+```
+
+```{r}
+# Subset data
+testdata <- mappingData %>% 
+  filter(sample == "inSilico") %>% 
+  mutate(
+    expected_readAbundance = as.double(expected_readAbundance),
+    Kraken_RA = as.double(Kraken_RA)
+  )
+
+# Plot Figure 5A. Aesthetics were further adjusted in Illustrator.
+ggscatter(
+  testdata, x="expected_readAbundance", y="coverM_RA", 
+        add = "reg.line", conf.int = TRUE, 
+        cor.method = "spearman",
+        add.params = list(color = "blue",
+                          fill = "lightgray"),
+        xlab = "Expected abundance (%)", ylab = "Observed abundance (%)",
+        #title = paste0("KO: ",uniqueGO_df_Akk_sorted$GO[i], "; top20),
+        color = "bacterium", palette = c(
+          'E_bolteae_ATCC_BAA613' = '#fd8d3c',
+          'E_citroniae_WAL_17108' = '#fdae6b',
+          'E_clostridioformis_WAL_7855' = '#fdd0a2',
+          'Bacteroides_thetaiotaomicron_VPI_5482' = '#c7e9c0',
+          'Bacteroides_thetaiotaomicron_3731' = '#74c476',
+          'Bacteroides_thetaiotaomicron_7330' = '#a1d99b',
+          'Escherichia_coli_BW25113' = '#6a51a3',
+          'Escherichia_coli_MG1655' = '#bcbddc',
+          'Escherichia_coli_DH10B' = '#807dba',
+          'Escherichia_coli_MC4100' = '#9e9ac8'),
+          facet.by = "Kraken_LCA", size=3
+  ) +
+  coord_fixed(ratio = 1) +
+  coord_cartesian(ylim = c(0, 43), xlim = c(0, 43)) +
+  stat_cor() +
+  geom_abline(intercept = 0) +
+  theme_test() +
+  theme(
+    axis.text = element_text(size=14),
+    axis.title = element_text(size=16),
+    legend.position="none"
+    )
+```
+
+
+
+```{r}
+# Mutate data type to double
+testdataKrakenRA <- mappingData %>% 
+  mutate(
+    Kraken_RA = as.double(Kraken_RA)
+  )
+
+# Plot Figure 5B. Aesthetics were further adjusted in Illustrator.
+ggscatter(
+  testdataKrakenRA, x="expected_readAbundance", y="Kraken_RA", 
+  add = "reg.line", conf.int = TRUE, 
+  cor.method = "spearman",
+  add.params = list(color = "blue", fill = "lightgray"),
+  xlab = "Expected abundance (%)", ylab = "Observed abundance (%)",
+  color = "bacterium", palette = c(
+    'E_bolteae_ATCC_BAA613' = '#fd8d3c',
+    'E_citroniae_WAL_17108' = '#fdae6b',
+    'E_clostridioformis_WAL_7855' = '#fdd0a2',
+    'Bacteroides_thetaiotaomicron_VPI_5482' = '#c7e9c0',
+    'Bacteroides_thetaiotaomicron_3731' = '#74c476',
+    'Bacteroides_thetaiotaomicron_7330' = '#a1d99b',
+    'Escherichia_coli_BW25113' = '#6a51a3',
+    'Escherichia_coli_MG1655' = '#bcbddc',
+    'Escherichia_coli_DH10B' = '#807dba',
+    'Escherichia_coli_MC4100' = '#9e9ac8'),
+    facet.by = "Kraken_LCA", size=3
+  ) +
+  coord_fixed(ratio = 1) +
+  coord_cartesian(ylim = c(0, 43), xlim = c(0, 43)) +
+  stat_cor() +
+  geom_abline(intercept = 0) +
+  theme_test() +
+  theme(
+    axis.text = element_text(size=14),
+    axis.title = element_text(size=16),
+    legend.position="none"
+   )
+```
+
+```{r}
+# Plot Figure 5C. Aesthetics were further adjusted in Illustrator.
+statMappingDataLCA %>% 
+  ggplot(aes(x=Kraken_LCA, y=LCA_ratio, color=Kraken_LCA)) + 
+  geom_boxplot() +
+  labs(y="Change in read abundance (ratio)", x="Lowest common ancestor") +
+  scale_color_manual(values=c(
+    'Escherichia coli K-12' = '#4a1486',
+    'Enterocloster' = '#d76127',
+    'Bacteroides thetaiotaomicron' = '#1b9e77'
+  )) +
+  theme_test() +
+  theme(
+    axis.text = element_text(size=14),
+    axis.text.x = element_text(size=14, angle=15, hjust=1),
+    axis.title = element_text(size=16),
+    legend.position="none"
+  )
+```
+
+```{r}
+# Plot Figure 5D. Aesthetics were further adjusted in Illustrator.
+statMappingDataIsolate %>% 
+  ggplot(aes(x=bacterium, y=Isolate_ratio, color=bacterium)) + 
+  geom_boxplot() +
+  labs(y="Observed vs Expected RA ratio", x="") +
+  scale_x_discrete(
+    labels=c(
+    'E_bolteae_ATCC_BAA613' = 'E. bolteae',
+    'E_citroniae_WAL_17108' = 'E. citroniae',
+    'E_clostridioformis_WAL_7855' = 'E. clostridioformis',
+    'Bacteroides_thetaiotaomicron_VPI_5482' = 'B. thetaiotaomicron VPI-5482',
+    'Bacteroides_thetaiotaomicron_3731' = 'B. thetaiotaomicron 3731',
+    'Bacteroides_thetaiotaomicron_7330' = 'B. thetaiotaomicron 7330',
+    'Escherichia_coli_BW25113' = 'E. coli K-12 BW25113',
+    'Escherichia_coli_MG1655' = 'E. coli K-12 MG1655',
+    'Escherichia_coli_DH10B' = 'E. coli K-12 DH10B',
+    'Escherichia_coli_MC4100' = 'E. coli K-12 MC4100')) +
+  scale_color_manual(values=c(
+    'E_bolteae_ATCC_BAA613' = '#fd8d3c',
+    'E_citroniae_WAL_17108' = '#fdae6b',
+    'E_clostridioformis_WAL_7855' = '#fdd0a2',
+    'Bacteroides_thetaiotaomicron_VPI_5482' = '#c7e9c0',
+    'Bacteroides_thetaiotaomicron_3731' = '#74c476',
+    'Bacteroides_thetaiotaomicron_7330' = '#a1d99b',
+    'Escherichia_coli_BW25113' = '#6a51a3',
+    'Escherichia_coli_MG1655' = '#bcbddc',
+    'Escherichia_coli_DH10B' = '#807dba',
+    'Escherichia_coli_MC4100' = '#9e9ac8'
+  )) +
+  scale_y_log10() +
+  theme_test() +
+  theme(
+    axis.text = element_text(size=14),
+    axis.text.x = element_text(size=11, angle=25, hjust=1),
+    axis.title = element_text(size=13),
+    legend.position="none"
+  )
+```
