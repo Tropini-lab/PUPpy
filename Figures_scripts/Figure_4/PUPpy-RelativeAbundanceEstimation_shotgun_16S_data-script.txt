@@ -1,0 +1,253 @@
+# Script to measure relative abundance from shotgun sequencing data
+# Used in Figure 4 of the PUPpy paper
+# Relative abundance calculated using an alignment approach (Bowtie2 + CoverM) and a Lowest Common Ancestor (LCA approach for shotgun sequencing data, and with QIIME2 for 16S data
+# In silico reads were generated using InSilicoSeq
+
+
+## Relative abundance - shotgun sequencing data:
+
+# Create a mapping file for downstream analysis called: 'July2023_puppy-SSS_PEG-Shotgun-mapping.txt'
+vim July2023_puppy-SSS_PEG-Shotgun-mapping.txt
+
+# Write the lines below in the mapping file above
+PEG_S143
+SSS_S142
+
+## 'PEG' and 'GUT' are used interchangeably in filenames, but they refer to the same data.
+
+#################### Step 1: Cleaning reads with Fastp ####################
+
+# Define variables
+map_out=${ShotDIR}/2.bowtie2_analysis/alignments
+
+# Create directories
+mkdir -p ${ShotDIR}
+mkdir -p ${ShotDIR}/1.fastp_trimmedReads
+mkdir -p ${ShotDIR}/0.fastqc
+mkdir -p ${ShotDIR}/0.fastqc/0a.fastqc_RawReads
+mkdir -p ${ShotDIR}/0.fastqc/0b.fastqc_POSTfastp
+# Create directory to store bowtie2 output files
+mkdir -p ${ShotDIR}/2.bowtie2_analysis
+mkdir -p ${ShotDIR}/2.bowtie2_analysis/index
+mkdir -p ${ShotDIR}/2.bowtie2_analysis/alignments
+mkdir ${map_out}/bam
+mkdir ${map_out}/sorted_bam
+mkdir ${ShotDIR}/3.coverM_RA
+
+# CHECK RAW READ QUALITY
+conda activate fastqc
+
+## Run FASTQC
+fastqc -o ${ShotDIR}/0.fastqc/0a.fastqc_RawReads --extract -f fastq ${RawReads}/*fastq.gz -t 15
+## Aggregate multiple bioinformatics analyses reports into a single one - MultiQC
+multiqc ${ShotDIR}/0.fastqc/0a.fastqc_RawReads -o ${ShotDIR}/0.fastqc/0a.fastqc_RawReads
+
+# Activate conda environment
+conda deactivate
+conda activate fastp
+
+# Works
+for sample in `cat ${ShotDIR}/July2023_puppy-SSS_PEG-Shotgun-mapping.txt`; do \
+	fastp \
+	-i ${RawReads}/${sample}_R1_001.fastq.gz \
+	-I ${RawReads}/${sample}_R2_001.fastq.gz \
+	-o ${ShotDIR}/1.fastp_trimmedReads/trimmed_${sample}_R1_001.fastq.gz \
+	-O ${ShotDIR}/1.fastp_trimmedReads/trimmed_${sample}_R2_001.fastq.gz \
+	-q 20 \
+	-p \
+	-3 \
+	-5 \
+	-M 20 \
+	-W 4 \
+	-w 15 \
+	-c \
+	-l 50 \
+	--dedup \
+	--dup_calc_accuracy 5 \
+	--adapter_fasta ${workDIR}/NexteraPE-PE.fa \
+	-h ${ShotDIR}/1.fastp_trimmedReads/fastp_report_${sample}.html
+done
+
+# Create directory for reports
+mkdir ${ShotDIR}/1.fastp_trimmedReads/TrimmedReports
+# Move files to reports directory
+mv ${ShotDIR}/1.fastp_trimmedReads/*.html ${ShotDIR}/1.fastp_trimmedReads/TrimmedReports
+
+# RUN QUALITY CONTROL AGAIN
+
+# Activate conda environment
+conda deactivate
+conda activate fastqc
+
+## Run FASTQC
+fastqc -o ${ShotDIR}/0.fastqc/0b.fastqc_POSTfastp --extract -f fastq ${ShotDIR}/1.fastp_trimmedReads/*fastq.gz -t 15
+
+## Aggregate multiple bioinformatics analyses reports into a single one - MultiQC
+multiqc ${ShotDIR}/0.fastqc/0b.fastqc_POSTfastp -o ${ShotDIR}/0.fastqc/0b.fastqc_POSTfastp
+
+#################### Step 2: Competitive mapping with Bowtie2 ####################
+
+# Activate conda environment
+conda deactivate
+conda activate bowtie2
+
+## Build genome indices
+
+# Concatenate genomes
+cat ${SSSgenomes}/*.fna > ${ShotDIR}/puppy_SSS-concatenated_genomes.fna
+cat ${PEGgenomes}/*.fna > ${ShotDIR}/puppy_PEG-concatenated_genomes.fna
+
+# SSS: Build index of concatenated genomes
+bowtie2-build ${ShotDIR}/puppy_SSS-concatenated_genomes.fna ${ShotDIR}/2.bowtie2_analysis/index/SSS_index
+# PEG: Build index of concatenated genomes
+bowtie2-build ${ShotDIR}/puppy_PEG-concatenated_genomes.fna ${ShotDIR}/2.bowtie2_analysis/index/PEG_index
+
+# Check that the bowtie index contains the right (expected) indeces (check that each member appears in the index)
+bowtie2-inspect -n ${ShotDIR}/2.bowtie2_analysis/index/SSS_index
+bowtie2-inspect -n ${ShotDIR}/2.bowtie2_analysis/index/PEG_index
+
+# Competitive mapping
+# Only keep correct alignments (for loops create redundant files)
+
+# SSS
+# Map reads against the concatenated reference genomes.
+for sample in `cat ${ShotDIR}/July2023_puppy-SSS_PEG-Shotgun-mapping.txt`; do \
+	bowtie2 \
+	-D 20 \
+	-R 3 \
+	-N 0 \
+	-L 20 \
+	-i S,1,0.50 \
+	--reorder \
+	-x ${ShotDIR}/2.bowtie2_analysis/index/SSS_index \
+	-1 ${ShotDIR}/1.fastp_trimmedReads/trimmed_${sample}_R1_001.fastq.gz \
+	-2 ${ShotDIR}/1.fastp_trimmedReads/trimmed_${sample}_R2_001.fastq.gz \
+	--no-unal \
+	-p 40 \
+	-S ${map_out}/SSS_alignments_${sample}.sam
+done
+
+# PEG
+# Map reads against the concatenated reference genomes
+for sample in `cat ${ShotDIR}/July2023_puppy-SSS_PEG-Shotgun-mapping.txt`; do \
+	bowtie2 \
+	-D 20 \
+	-R 3 \
+	-N 0 \
+	-L 20 \
+	-i S,1,0.50 \
+	--reorder \
+	-x ${ShotDIR}/2.bowtie2_analysis/index/PEG_index \
+	-1 ${ShotDIR}/1.fastp_trimmedReads/trimmed_${sample}_R1_001.fastq.gz \
+	-2 ${ShotDIR}/1.fastp_trimmedReads/trimmed_${sample}_R2_001.fastq.gz \
+	--no-unal \
+	-p 40 \
+	-S ${map_out}/PEG_alignments_${sample}.sam
+done
+
+# Sort and Index alignments
+
+# Create Sorted and Indexed .bam files
+## Index
+### SSS
+samtools view -S -b ${ShotDIR}/2.bowtie2_analysis/alignments/SSS_alignments_SSS_S142.sam > ${ShotDIR}/2.bowtie2_analysis/alignments/bam/SSS_alignments_SSS_S142.bam
+### PEG
+samtools view -S -b ${ShotDIR}/2.bowtie2_analysis/alignments/PEG_alignments_PEG_S143.sam > ${ShotDIR}/2.bowtie2_analysis/alignments/bam/PEG_alignments_PEG_S143.bam
+
+## Sort
+### SSS
+samtools sort ${ShotDIR}/2.bowtie2_analysis/alignments/bam/SSS_alignments_SSS_S142.bam -o ${ShotDIR}/2.bowtie2_analysis/alignments/sorted_bam/SSS_S142.sorted.bam
+### PEG
+samtools sort ${ShotDIR}/2.bowtie2_analysis/alignments/bam/PEG_alignments_PEG_S143.bam -o ${ShotDIR}/2.bowtie2_analysis/alignments/sorted_bam/PEG_S143.sorted.bam
+
+#################### Step 3: Calculate relative abundance - CoverM ####################
+
+# Change conda environment
+conda deactivate
+conda activate coverM
+
+### SSS
+# Specifying genome directory instead of each genome individually
+coverm genome \
+-b ${ShotDIR}/2.bowtie2_analysis/alignments/sorted_bam/SSS_S142.sorted.bam \
+-d ${SSSgenomes} \
+-x fna \
+-t 20 \
+-m relative_abundance \
+--output-file ${ShotDIR}/3.coverM_RA/2Jul23-puppy_SSS-shotgun_RA_coverM.tsv
+
+### PEG
+# Specifying genome directory instead of each genome individually
+coverm genome \
+-b ${ShotDIR}/2.bowtie2_analysis/alignments/sorted_bam/PEG_S143.sorted.bam \
+-d ${PEGgenomes} \
+-x fna \
+-t 20 \
+-m relative_abundance \
+--output-file ${ShotDIR}/3.coverM_RA/2Jul23-puppy_PEG-shotgun_RA_coverM.tsv
+
+#################### Step 3: Calculate relative abundance - Kraken2 ####################
+
+# This was only done for the SSS community, aimed at troubleshooting multi-mapping using in silico RawReads
+
+# Create Kraken2 custom reference database
+# TaxIDs
+B. theta VPI: |kraken:taxid|226186
+B. theta 3731: |kraken:taxid|1422836 # <- this is the ID of B. theta WH3 so that it is unique. Its actual IDs currently is 818 (GCF_001049535.1)
+B. theta 7330: |kraken:taxid|1235785 # <- this is the ID of B. theta dnLKV9 so that it is unique. Its actual IDs currently is 818 (GCF_001314975.1)
+E. coli DH10B: |kraken:taxid|316385
+E. coli BW25113: |kraken:taxid|679895
+E. coli MC4100: |kraken:taxid|1403831
+E. coli MG1655: |kraken:taxid|511145
+E. boltae: |kraken:taxid|208479
+E. citroniae: |kraken:taxid|358743
+E. clostridioforme: |kraken:taxid|1531
+
+# Add tax ID strings to each FASTA header of all genomes
+bioawk -c fastx '{print ">"$name"|kraken:taxid|226186\n"$seq}' 2022July7_B_theta_VPI5482_HG_genomic.fna > 2022July7_B_theta_VPI5482_HG_genomicTax.fna
+
+bioawk -c fastx '{print ">"$name"|kraken:taxid|1422836 \n"$seq}' Btheta_3731_genomic.fna >Btheta_3731_genomicTax.fna
+
+bioawk -c fastx '{print ">"$name"|kraken:taxid|1235785\n"$seq}' Btheta_7330_genomic.fna >Btheta_7330_genomicTax.fna
+
+bioawk -c fastx '{print ">"$name"|kraken:taxid|316385\n"$seq}' Escherichia_coli_str_K12_substr_DH10B_genomic.fna >Escherichia_coli_str_K12_substr_DH10B_genomicTax.fna
+
+bioawk -c fastx '{print ">"$name"|kraken:taxid|679895\n"$seq}' Escherichia_coli_str_K12_substr_BW25113_genomic.fna > Escherichia_coli_str_K12_substr_BW25113_genomicTax.fna
+
+bioawk -c fastx '{print ">"$name"|kraken:taxid|1403831\n"$seq}' Escherichia_coli_str_K12_substr_MC4100_genomic.fna >Escherichia_coli_str_K12_substr_MC4100_genomicTax.fna
+
+bioawk -c fastx '{print ">"$name"|kraken:taxid|511145\n"$seq}' Escherichia_coli_str_K12_substr_MG1655_genomic.fna >Escherichia_coli_str_K12_substr_MG1655_genomicTax.fna
+
+bioawk -c fastx '{print ">"$name"|kraken:taxid|208479\n"$seq}' E_bolteae_ATCCBAA613_genomic.fna >E_bolteae_ATCCBAA613_genomicTax.fna
+
+bioawk -c fastx '{print ">"$name"|kraken:taxid|358743\n"$seq}' E_citroniae_WAL17108_genomic.fna >E_citroniae_WAL17108_genomicTax.fna
+
+bioawk -c fastx '{print ">"$name"|kraken:taxid|1531\n"$seq}' E_clostridioforme_WAL7855_genomic.fna >E_clostridioforme_WAL7855_genomicTax.fa
+
+DBNAME=/project/st-ctropini-1/hghezzi/PUPpy/databases/customSSS
+
+for file in ./SSS_Kraken_genomes/*.fna
+do
+    kraken2-build --add-to-library $file --db $DBNAME
+done
+
+# 5. Download taxonomy files
+kraken2-build --download-taxonomy --db $DBNAME
+
+# 6. Build database
+kraken2-build --build --db $DBNAME
+
+# Kraken2 relative abundance estimation using the SSS custome reference databases
+# Variables:
+SSSCustomkrakenDB=/project/st-ctropini-1/hghezzi/PUPpy/databases/customSSS
+# See page: Kraken Analysis for details on how this database was manually created
+
+# Run kraken2
+kraken2 --db $CustomkrakenDB --threads 20 --report ${ShotDIR}/4.kraken2RA/reports/new_CustomDB_SSS142.kraken2.report.txt \
+--output ${ShotDIR}/4.kraken2RA/reads_out/new_CustomDB_SSS142.kraken2.reads.txt \
+--report-minimizer-data --minimum-hit-groups 3 \
+--paired ${ShotDIR}/1.fastp_trimmedReads/trimmed_SSS_S142_R1_001.fastq.gz ${ShotDIR}/1.fastp_trimmedReads/trimmed_SSS_S142_R2_001.fastq.gz > ${ShotDIR}/4.kraken2RA/Kraken_out/new_CustomDB_SSS142.kraken2.txt
+
+#################### 16S relative abundance estimation with QIIME2 ####################
+
+See template script for the Muribaculaceae analysis in Figure 3.
