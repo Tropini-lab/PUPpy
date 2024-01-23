@@ -1,0 +1,133 @@
+---
+title: "Script to analyse pyani output and generate heatmap of the SSS community used to validate PUPpy"
+output: html_document
+date: "2024-01-16"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+# Loading required library
+library(tidyverse)
+library(ComplexHeatmap)
+library(readxl)
+library(circlize)
+library(ggplot2)
+```
+
+```{r}
+# loading the output percentage identity file from pyani analysis
+dat <- read_excel("ANIb_percentage_identity.xlsx") %>%
+	rename("member_genomes" = "...1")
+
+# write the names for the strains
+names <- c("member_genomes",           
+           "E_bolteae_ATCCBAA613_genomic",           
+           "E_citroniae_WAL17108_genomic",           
+           "E_clostridioforme_WAL7855_genomic",           
+           "2022July7_B_theta_VPI5482_HG_genomic",           
+           "Btheta_3731_genomic",           
+           "Btheta_7330_genomic",           
+           "Escherichia_coli_str_K12_substr_BW25113_genomic",           
+           "Escherichia_coli_str_K12_substr_MG1655_genomic",           
+           "Escherichia_coli_str_K12_substr_DH10B_genomic",           
+           "Escherichia_coli_str_K12_substr_MC4100_genomic")
+# give new names
+new_names <- c("E.bolteae ATCCBAA613",               
+               "E.citroniae WAL17108",               
+               "E.clostridioforme WAL7855",               
+               "B.theta VPI5482",               
+               "B.theta 3731",               
+               "B.theta 7330",               
+               "E.coli K12 BW25113",               
+               "E.coli K12 MG1655",               
+               "E.coli K12 DH10B",               
+               "E.coli K12 MC4100")
+
+# match both rows and column names based on the 'names' variable
+dat <- dat[match(names[-1], dat$member_genomes), names]
+```
+
+```{r}
+# Make heatmap matrix for identity
+dat_matrix <- as.matrix(dat[-1]) # takes out the first column (row names)
+rownames(dat_matrix) <- dat %>% select(1) %>% pull
+rownames(dat_matrix) <- new_names
+colnames(dat_matrix) <- new_names
+dat_matrix
+```
+
+```{r}
+# loading the output percentage coverage file from pyani analysis
+dat <- read_excel("ANIb_alignment_coverage.xlsx") %>% 
+	rename("member_genomes" = "...1")
+
+# write the names for the strains
+names <- c("member_genomes",           
+           "E_bolteae_ATCCBAA613_genomic",           
+           "E_citroniae_WAL17108_genomic",           
+           "E_clostridioforme_WAL7855_genomic",           
+           "2022July7_B_theta_VPI5482_HG_genomic",           
+           "Btheta_3731_genomic",           
+           "Btheta_7330_genomic",           
+           "Escherichia_coli_str_K12_substr_BW25113_genomic",           
+           "Escherichia_coli_str_K12_substr_MG1655_genomic",           
+           "Escherichia_coli_str_K12_substr_DH10B_genomic",           
+           "Escherichia_coli_str_K12_substr_MC4100_genomic")
+# give new names
+new_names <- c("E.bolteae ATCCBAA613",               
+               "E.citroniae WAL17108",               
+               "E.clostridioforme WAL7855",               
+               "B.theta VPI5482",               
+               "B.theta 3731",               
+               "B.theta 7330",               
+               "E.coli K12 BW25113",               
+               "E.coli K12 MG1655",               
+               "E.coli K12 DH10B",               
+               "E.coli K12 MC4100")
+
+# match both rows and column names based on the 'names' variable
+dat <- dat[match(names[-1], dat$member_genomes), names]
+```
+
+```{r}
+# Make heatmap matrix for coverage
+dat_coverage <- as.matrix(dat[-1]) # takes out the first column (row names)
+rownames(dat_coverage) <- dat %>% select(1) %>% pull
+rownames(dat_coverage) <- new_names
+colnames(dat_coverage) <- new_names
+```
+
+```{r}
+# Combine the two variable and bring into a single heat map
+m_coverage = as.data.frame(as.table(dat_coverage))
+m_matrix = as.data.frame(as.table(dat_matrix))
+
+m_combined = cbind(m_coverage,m_matrix)
+colnames(m_combined) = c('c1','c2','Percentage Coverage','c4','c5','Percentage Identity')
+```
+
+```{r}
+# Plot the heatmap
+ggplot(m_combined) +
+  geom_point(
+    aes(x = c1,
+        y = c2,
+        size = `Percentage Coverage`,
+        fill = `Percentage Identity`),
+    shape=21, colour="black") +
+  ylab(NULL) +
+  xlab(NULL) +
+  scale_fill_gradient2(limits = c(0.7,1.0),
+                       low = 'lightyellow', 
+                       high = 'brown', 
+                       midpoint = 0.85,
+                       mid = 'red') +
+  theme(axis.text.x = element_text(angle = 60, hjust=1), 
+        panel.background = element_rect(fill = "whitesmoke"), 
+        panel.grid = element_line(size=0.5, color="white"), 
+        axis.line = element_line(colour="black", size=0.5)
+        )
+```

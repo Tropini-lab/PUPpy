@@ -1,0 +1,162 @@
+# Script to analyse 16S raw reads and estimate Muribaculaceae abundance in complex stool samples. 
+# Used to get relative abundance plotted in Figure 3F.
+
+WorkDir=/project/st-ctropini-1/hghezzi/PUPpy/101223_MuriGroup_16Sanalysis
+exp_fp=${WorkDir}
+reads=${WorkDir}/raw_data
+
+metadata_fp=${WorkDir}
+classifier_fp=${exp_fp}/databases
+
+step_0_analysis=${exp_fp}/analysis
+step_0_fp=${exp_fp}/analysis/0_fastqc
+step_1_fp=${exp_fp}/analysis/1_demux_denoise
+step_2_fp=${exp_fp}/analysis/2_summaries_and_analyses
+step_3_fp=${exp_fp}/analysis/3_stats
+log_fp=${exp_fp}/analysis/logs
+
+# Make your directories
+mkdir $exp_fp
+mkdir $metadata_fp
+mkdir $classifier_fp
+mkdir $step_0_analysis
+mkdir $step_0_fp
+mkdir $step_1_fp
+mkdir $step_2_fp
+mkdir $step_3_fp
+mkdir $log_fp
+mkdir ${step_2_fp}/2b_alpha_diversity_tsvs
+mkdir ${step_2_fp}/2b_pcoa_result_txts
+mkdir ${step_3_fp}/3a_alpha_div_group_significance
+
+# Check quality of fastq reads
+fastqc ${reads}/*.fastq.gz --extract -t 10 -o $step_0_fp
+cd $step_0_fp
+multiqc .
+
+# importing 16S results to QIIME2
+qiime tools import \
+  --type 'SampleData[PairedEndSequencesWithQuality]' \
+  --input-path ${metadata_fp}/101223_Muri_sample_manifest.txt \
+  --output-path ${step_1_fp}/1a_paired-end-demux.qza \
+  --input-format PairedEndFastqManifestPhred33V2
+
+qiime demux summarize --i-data ${step_1_fp}/1a_paired-end-demux.qza --o-visualization ${step_1_fp}/1a_raw_data_quality.qzv
+
+## Denoise data
+qiime dada2 denoise-paired \
+--i-demultiplexed-seqs ${step_1_fp}/1a_paired-end-demux.qza \
+--p-trim-left-f 0 \
+--p-trim-left-r 0 \
+--p-trunc-len-f 292 \ #chosen after multiqc report
+--p-trunc-len-r 227 \ #chosen after multiqc report
+--p-max-ee-f 2 \
+--p-max-ee-r 2 \
+--p-n-threads 10 \
+--o-table ${step_1_fp}/1b_feature-table.qza \
+--o-representative-sequences ${step_1_fp}/1b_rep-features.qza \
+--o-denoising-stats ${step_1_fp}/1b_DADA2_stats.qza \
+--verbose &> ${log_fp}/1b_dada2_log.txt
+
+# Convert your DADA2 stats into a viewable format
+qiime metadata tabulate \
+	--m-input-file ${step_1_fp}/1b_DADA2_stats.qza \
+	--o-visualization ${step_1_fp}/1b_DADA2_stats.qzv
+
+# This performs some stats on your ASV table, like sequence length.
+# You can also use this .qzv to download your sequence table, although I prefer to just export it.
+qiime feature-table tabulate-seqs \
+	--i-data ${step_1_fp}/1b_rep-features.qza \
+	--o-visualization ${step_1_fp}/1b_rep-features.qzv
+
+# This performs stats on reads per sample post-DADA2, 
+# and also provides some feature-specific stats (e.g. sample freq)
+qiime feature-table summarize \
+--i-table ${step_1_fp}/1b_feature-table.qza \
+--o-visualization ${step_1_fp}/1b_feature-table.qzv
+
+#### classifier info
+/project/st-ctropini-1/huans_pipeline/PUPpy/July2023_PUPpy_quantification_evaluation/July2023_16S_analysis/databases
+
+
+###### TRAIN CLASSIFIER:
+qiime feature-classifier extract-reads \
+  --i-sequences ${classifier_fp}/silva-138-99-seqs.qza \
+  --p-f-primer GTGYCAGCMGCCGCGGTAA #5' -> 3' \
+  --p-r-primer GGACTACNVGGGTWTCTAAT #5' -> 3' \
+  --p-min-length 200 \
+  --p-max-length 525 \
+  --o-reads ${classifier_fp}/Dec2023_G4H_silva_ref-seqs.qza \
+	--p-n-jobs 5
+
+qiime feature-classifier fit-classifier-naive-bayes \
+  --i-reference-reads ${classifier_fp}/Dec2023_G4H_silva_ref-seqs.qza \
+  --i-reference-taxonomy ${classifier_fp}/silva-138-99-tax.qza \
+  --o-classifier ${classifier_fp}/HG_Dec2023_G4H_silva-138-99-full.classifier.qza
+
+# Classify your sequences
+time qiime feature-classifier classify-sklearn \
+	--i-classifier ${classifier_fp}/HG_Dec2023_G4H_silva-138-99-full.classifier.qza \
+	--i-reads ${step_1_fp}/1b_rep-features.qza \
+	--o-classification ${step_1_fp}/1c_classified_rep_seqs.qza \
+	--p-n-jobs -5
+
+# Make a phylogenetic tree 
+qiime phylogeny align-to-tree-mafft-fasttree \
+--i-sequences ${step_1_fp}/1b_rep-features.qza \
+--output-dir ${step_1_fp}/1c_phylogenetic_tree \
+--p-n-threads 10 \
+--verbose &> ${log_fp}/1c_phylogenetic_tree_generation.log
+
+
+# Save the features and taxonomy in a file
+qiime metadata tabulate \
+    --m-input-file ${step_1_fp}/1b_rep-features.qza \
+    --m-input-file ${step_1_fp}/1c_classified_rep_seqs.qza  \
+    --o-visualization ${step_1_fp}/1c_features_and_taxonomy.qzv
+
+
+unzip -d ${step_1_fp} -j ${step_1_fp}/1c_features_and_taxonomy.qzv "*input*.tsv"
+mv ${step_1_fp}/input.tsv ${step_1_fp}/1c_features_and_taxonomy.tsv
+
+
+# Make taxa summary plots
+qiime taxa barplot \
+--i-table ${step_1_fp}/1b_feature-table.qza \
+--i-taxonomy ${step_1_fp}/1c_classified_rep_seqs.qza \
+--m-metadata-file ${metadata_fp}/101223_Muri_sample_manifest.txt \
+--o-visualization ${step_2_fp}/2a_taxa-barplots.qzv
+
+# Pull out the collapsed taxa summaries
+unzip -d ${step_2_fp}/2a_taxa_tables_collapsed/ -j ${step_2_fp}/2a_taxa-barplots.qzv "*.csv"
+
+# Make biom and tsv of ASV table
+# First export feature table and classified rep seqs (taxonomy)
+# done
+qiime tools export \
+  --input-path ${step_1_fp}/1b_feature-table.qza  \
+  --output-path ${step_1_fp}/
+
+mv ${step_1_fp}/feature-table.biom ${step_1_fp}/1b_feature-table.biom
+
+qiime tools export \
+ --input-path ${step_1_fp}/1c_classified_rep_seqs.qza \
+ --output-path ${step_1_fp}/
+
+mv ${step_1_fp}/taxonomy.tsv ${step_1_fp}/1c_classified_rep_seqs.tsv
+
+# Then change header of taxonomy file to: #otu-id	taxonomy	Confidence
+sed -i '' -e 's/Feature ID/#otu-id/g' -e 's/Taxon/taxonomy/g' ${step_1_fp}/1c_classified_rep_seqs.tsv
+
+# Create a biom file
+biom add-metadata \
+ --input-fp ${step_1_fp}/1b_feature-table.biom \
+ --observation-metadata-fp ${step_1_fp}/1c_classified_rep_seqs.tsv \
+ --output-fp ${step_2_fp}/2a_feature-table-with-taxonomy.biom
+
+# Convert the biom file to a .tsv
+biom convert \
+ --input-fp ${step_2_fp}/2a_feature-table-with-taxonomy.biom \
+ --output-fp ${step_2_fp}/2a_feature-table-with-taxonomy.tsv \
+ --to-tsv \
+ --header-key taxonomy

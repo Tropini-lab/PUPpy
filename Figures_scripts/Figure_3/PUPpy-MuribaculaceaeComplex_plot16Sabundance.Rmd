@@ -1,0 +1,38 @@
+---
+title: "Script to plot the 16S Muribaculaceae relative abundance in the complex stool samples used to validate PUPpy"
+output: html_document
+date: "2023-12-04"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(readxl)
+library("ggpubr")
+```
+
+
+```{r}
+MuriDataL5 <- read_excel("101223_MuriGroup_L5.xlsx", sheet = "Muri_RA_only")
+glimpse(MuriDataL5)
+```
+
+```{r}
+MuriDataL5 %>% 
+  ggplot(aes(x=Figure_Name, y=Muri_rel_abund, shape=PEG_treatment)) +
+  geom_point(size=3) +
+  labs(y="Muribaculaceae abundance (%)", x="Sample") +
+  coord_fixed(ratio = 0.4) +
+  ylim(c(0, 40)) +
+  theme_classic() +
+  theme(
+    axis.text = element_text(size=14),
+    axis.text.x = element_text(size=14, angle=45, hjust=1),
+    axis.title = element_text(size=16),
+  )
+```
+
+

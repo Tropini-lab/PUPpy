@@ -1,0 +1,27 @@
+# Code and instructions to generate taxon-specific primers for the SSS community, used in Figure 2B, 4B, and 4C of the PUPpy paper.
+
+# Gather the CDS files of all 10 SSS community members. Table S1 indicates the NCBI sources where the assemblies can be found.
+
+# Activate Conda environment
+conda activate puppy
+
+# Align CDS files of all 10 SSS community members
+## The folder '10Member_SSS_CDSes' contains all 10 CDS files downloaded from the NCBI.
+puppy-align -pr 10Member_SSS_CDSes -o SSS_Align_OUT
+
+# Design microbe-specific primers for all 10 SSS community members
+puppy-primers -pr 10Member_SSS_CDSes -i SSS_Align_OUT/ResultDB.tsv -o SSS_primers -s 125 175 -optm 62 -tmd 1.5
+
+# Design group-specific primers for the 3 major SSS community taxa:
+
+# Enterocloster species
+## Move the Enterocloster CDS files to a separate folder, here called 'Entero_SSS_4CDSes', to use as intended target.
+puppy-primers -pr Entero_SSS_3CDSes -i SSS_Align_OUT/ResultDB.tsv -o Entero_SSS_primers -s 125 175 -optm 62 -tmd 1.5
+
+# Bacteroides thetaiotaomicron
+## Move the B. thetaiotaomicron CDS files to a separate folder, here called 'Btheta_SSS_3CDSes', to use as intended target.
+puppy-primers -pr Btheta_SSS_3CDSes -i SSS_Align_OUT/ResultDB.tsv -o Btheta_SSS_primers -s 125 175 -optm 62 -tmd 1.5
+
+# Escherichia coli substrains
+## Move the E. coli CDS files to a separate folder, here called 'Ecoli_SSS_4CDSes', to use as intended target.
+puppy-primers -pr Ecoli_SSS_4CDSes -i SSS_Align_OUT/ResultDB.tsv -o Ecoli_SSS_primers -s 125 175 -optm 62 -tmd 1.5

@@ -1,0 +1,15 @@
+# Code and instructions to generate Muribaculaceae-specific primers for the complex stool samples.
+
+# Gather the CDS files of all 167 members used to generate Muribaculaceae-specific primers. Table S1 indicates the sources of all 156 non-targets and 11 Muribaculaceae targets.
+
+# Activate Conda environment
+conda activate puppy
+
+# Align CDS files of all 167 members
+## The folder 'Muri_CDSes' contains all the CDS files of the 11 Muribaculaceae targets and the folder 'nonTarget_complex_CDSes' contains the 156 CDS files used for specificity checks
+puppy-align -pr Muri_CDSes -nt nonTarget_complex_CDSes -o Complex_Align_OUT
+
+# Identify CDSes conserved across the Muribaculaceae targets.
+puppy-primers -pr Muri_CDSes -i Complex_Align_OUT/ResultDB.tsv -o Complex_Muri_primers -s 125 175 -optm 56
+
+# Conserved CDS(es) were further inspected to manually design a Muribaculaceae-specific primer cocktail, as described in the PUPpy paper.
