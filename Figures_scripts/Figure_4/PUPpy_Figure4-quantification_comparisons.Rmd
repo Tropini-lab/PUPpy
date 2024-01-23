@@ -1,0 +1,193 @@
+---
+title: "Script to evaluate microbial quantification across methods (16S sequencing, shotgun sequencing, and ddPCR with PUPpy primers)."
+output: html_document
+date: "2023-07-06"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+```{r}
+# Load libraries
+library(tidyverse)
+library(readxl)
+```
+
+
+```{r}
+# Load data
+quantData <- read_excel("PUPpy_Figure4-all_quantifications.xlsx")
+```
+
+
+```{r}
+quantData %>% 
+  filter(Community == "SSS") %>% 
+  ggplot(aes(x = Method, y = RelAbund, fill=Taxon)) +
+  geom_bar(position="stack", stat="identity") +
+  facet_grid(~ Community) + 
+  labs(y="Relative abundance (%)", x="Method") +
+  scale_fill_manual(values=c(
+    'Faecalibacterium_prausnitzii_A2_165' = '#a6cee3',
+    'Enterococcus_faecalis_TX1322' = '#b2df8a',
+    'Clostridium_sporogenes_ATCC_15579' = '#33a02c',
+    'Muribaculum_intestinale_G6' = '#fb9a99',
+    'Bacteroides_ovatus_ATCC_8483' = '#e31a1c',
+    'Collinsella_stercoris_DSM_13279' = '#fdbf6f',
+    'Akkermansia_muciniphila_DSM_22959' = '#ff7f00',
+    'Eubacterium_rectale_ATCC_22656' = '#cab2d6',
+    'E_bolteae_ATCC_BAA613' = '#fd8d3c',
+    'E_citroniae_WAL_17108' = '#fdae6b',
+    'E_clostridioforme_WAL_7855' = '#fdd0a2',
+    'Bacteroides_thetaiotaomicron_VPI_5482' = '#c7e9c0',
+    'Bacteroides_thetaiotaomicron_3731' = '#74c476',
+    'Bacteroides_thetaiotaomicron_7330' = '#a1d99b',
+    'Escherichia_coli_BW25113' = '#6a51a3',
+    'Escherichia_coli_MG1655' = '#bcbddc',
+    'Escherichia_coli_DH10B' = '#807dba',
+    'Escherichia_coli_MC4100' = '#9e9ac8',
+    'g__Faecalibacterium' = '#a6cee3',
+    's__Bacteroides_thetaiotaomicron' = '#1b9e77',
+    'g__Enterococcus' = '#b2df8a',
+    'g__Clostridium_sensu_stricto_18' = '#33a02c',
+    'g__Muribaculaceae' = '#fb9a99',
+    's__Bacteroides_ovatus' = '#e31a1c',
+    'g__Collinsella' = '#fdbf6f',
+    's__Akkermansia_muciniphila' = '#ff7f00',
+    's__[Eubacterium]_rectale' = '#cab2d6',
+    'g__Escherichia-Shigella' = '#4a1486',
+    'g__Bacteroides' = '#00441b',
+    'Other' = '#737373',
+    'g__Escherichia-Shigella' = '#4b2c80',
+    'g__Lachnoclostridium' = '#d76127'
+  ),
+  labels=c(
+    'Faecalibacterium_prausnitzii_A2_165' = 'F. prausnitzii A2-165',
+    'Bacteroides_thetaiotaomicron_VPI_5482' = 'B. thetaiotaomicron VPI-5482',
+    'Enterococcus_faecalis_TX1322' = 'E. faecalis TX1322',
+    'Clostridium_sporogenes_ATCC_15579' = 'C. sporogenes ATCC 15579',
+    'Muribaculum_intestinale_G6' = 'M. intestinale G6',
+    'Bacteroides_ovatus_ATCC_8483' = 'B. ovatus ATCC 8483',
+    'Collinsella_stercoris_DSM_13279' = 'C. stercoris RCA 54-55',
+    'Akkermansia_muciniphila_DSM_22959' = 'A. muciniphila Muc',
+    'Eubacterium_rectale_ATCC_22656' = 'E. rectale ATCC 22656',
+    'Escherichia_coli_BW25113' = 'E. coli BW25113',
+    'E_bolteae_ATCC_BAA613' = 'E. bolteae ATCC BAA-613',
+    'E_citroniae_WAL_17108' = 'E. citroniae WAL-17108',
+    'E_clostridioforme_WAL_7855' = 'E. clostridioforme WAL-7855',
+    'Bacteroides_thetaiotaomicron_VPI_5482' = 'B. thetaiotaomicron VPI-5482',
+    'Bacteroides_thetaiotaomicron_3731' = 'B. thetaiotaomicron 3731',
+    'Bacteroides_thetaiotaomicron_7330' = 'B. thetaiotaomicron 7330',
+    'Escherichia_coli_BW25113' = 'E. coli BW25113',
+    'Escherichia_coli_MG1655' = 'E. coli MG1655',
+    'Escherichia_coli_DH10B' = 'E. coli DH10B',
+    'Escherichia_coli_MC4100' = 'E. coli MC4100',
+    'g__Faecalibacterium' = 'g__Faecalibacterium',
+    's__Bacteroides_thetaiotaomicron' = 's__Bacteroides_thetaiotaomicron',
+    'g__Enterococcus' = 'g__Enterococcus',
+    'g__Clostridium_sensu_stricto_18' = 'g__Clostridium_sensu_stricto_18',
+    'g__Muribaculaceae' = 'g__Muribaculaceae',
+    's__Bacteroides_ovatus' = 's__Bacteroides_ovatus',
+    'g__Collinsella' = 'g__Collinsella',
+    's__Akkermansia_muciniphila' = 's__Akkermansia_muciniphila',
+    's__[Eubacterium]_rectale' = 's__[Eubacterium]_rectale',
+    'g__Escherichia-Shigella' = 'g__Escherichia-Shigella',
+    'g__Bacteroides' = 'g__Bacteroides',
+    'g__Escherichia-Shigella' = 'g__Escherichia-Shigella',
+    'g__Lachnoclostridium' = 'g__Lachnoclostridium',
+    's__Bacteroides_thetaiotaomicron' = 's__Bacteroides_thetaiotaomicron')
+  ) +
+  theme_test() +
+  theme(
+    axis.text = element_text(size=14),
+    axis.title = element_text(size=16),
+  )
+
+```
+
+```{r}
+quantData %>% 
+  filter(Community == 'GUT') %>% 
+  ggplot(aes(x = Method, y = RelAbund, fill=Taxon)) +
+  geom_bar(position="stack", stat="identity") +
+  facet_grid(~ Community) + 
+  labs(y="Relative abundance (%)", x="Method") +
+  scale_fill_manual(values=c(
+    'Faecalibacterium_prausnitzii_A2_165' = '#a6cee3',
+    'Enterococcus_faecalis_TX1322' = '#b2df8a',
+    'Clostridium_sporogenes_ATCC_15579' = '#33a02c',
+    'Muribaculum_intestinale_G6' = '#fb9a99',
+    'Bacteroides_ovatus_ATCC_8483' = '#e31a1c',
+    'Collinsella_stercoris_DSM_13279' = '#fdbf6f',
+    'Akkermansia_muciniphila_DSM_22959' = '#ff7f00',
+    'Eubacterium_rectale_ATCC_22656' = '#cab2d6',
+    'E_bolteae_ATCC_BAA613' = '#f58b40',
+    'E_citroniae_WAL_17108' = '#f9ac6c',
+    'E_clostridioforme_WAL_7855' = '#fdd0a1',
+    'Bacteroides_thetaiotaomicron_VPI_5482' = '#c7e3be',
+    'Bacteroides_thetaiotaomicron_3731' = '#76c275',
+    'Bacteroides_thetaiotaomicron_7330' = '#a1d299',
+    'Escherichia_coli_BW25113' = '#6a52a1',
+    'Escherichia_coli_MG1655' = '#7f7dba',
+    'Escherichia_coli_DH10B' = '#9e99c6',
+    'Escherichia_coli_MC4100' = '#bcbcda',
+    'g__Faecalibacterium' = '#a6cee3',
+    's__Bacteroides_thetaiotaomicron' = '#199d77',
+    'g__Enterococcus' = '#b2df8a',
+    'g__Clostridium_sensu_stricto_18' = '#33a02c',
+    'g__Muribaculaceae' = '#fb9a99',
+    's__Bacteroides_ovatus' = '#e31a1c',
+    'g__Collinsella' = '#fdbf6f',
+    's__Akkermansia_muciniphila' = '#ff7f00',
+    's__[Eubacterium]_rectale' = '#cab2d6',
+    'g__Escherichia-Shigella' = '#4a1486',
+    'g__Bacteroides' = '#00441b',
+    'Other' = '#737373',
+    'g__Escherichia-Shigella' = '#4b2c80',
+    'g__Lachnoclostridium' = '#d66127'
+  ),
+  labels=c(
+    'Faecalibacterium_prausnitzii_A2_165' = 'F. prausnitzii A2-165',
+    'Bacteroides_thetaiotaomicron_VPI_5482' = 'B. thetaiotaomicron VPI-5482',
+    'Enterococcus_faecalis_TX1322' = 'E. faecalis TX1322',
+    'Clostridium_sporogenes_ATCC_15579' = 'C. sporogenes ATCC 15579',
+    'Muribaculum_intestinale_G6' = 'M. intestinale G6',
+    'Bacteroides_ovatus_ATCC_8483' = 'B. ovatus ATCC 8483',
+    'Collinsella_stercoris_DSM_13279' = 'C. stercoris RCA 54-55',
+    'Akkermansia_muciniphila_DSM_22959' = 'A. muciniphila Muc',
+    'Eubacterium_rectale_ATCC_22656' = 'E. rectale ATCC 22656',
+    'Escherichia_coli_BW25113' = 'E. coli BW25113',
+    'E_bolteae_ATCC_BAA613' = 'E. bolteae ATCC BAA-613',
+    'E_citroniae_WAL_17108' = 'E. citroniae WAL-17108',
+    'E_clostridioforme_WAL_7855' = 'E. clostridioforme WAL-7855',
+    'Bacteroides_thetaiotaomicron_VPI_5482' = 'B. thetaiotaomicron VPI-5482',
+    'Bacteroides_thetaiotaomicron_3731' = 'B. thetaiotaomicron 3731',
+    'Bacteroides_thetaiotaomicron_7330' = 'B. thetaiotaomicron 7330',
+    'Escherichia_coli_BW25113' = 'E. coli BW25113',
+    'Escherichia_coli_MG1655' = 'E. coli MG1655',
+    'Escherichia_coli_DH10B' = 'E. coli DH10B',
+    'Escherichia_coli_MC4100' = 'E. coli MC4100',
+    'g__Faecalibacterium' = 'g__Faecalibacterium',
+    's__Bacteroides_thetaiotaomicron' = 's__Bacteroides_thetaiotaomicron',
+    'g__Enterococcus' = 'g__Enterococcus',
+    'g__Clostridium_sensu_stricto_18' = 'g__Clostridium_sensu_stricto_18',
+    'g__Muribaculaceae' = 'g__Muribaculaceae',
+    's__Bacteroides_ovatus' = 's__Bacteroides_ovatus',
+    'g__Collinsella' = 'g__Collinsella',
+    's__Akkermansia_muciniphila' = 's__Akkermansia_muciniphila',
+    's__[Eubacterium]_rectale' = 's__[Eubacterium]_rectale',
+    'g__Escherichia-Shigella' = 'g__Escherichia-Shigella',
+    'g__Bacteroides' = 'g__Bacteroides',
+    'g__Escherichia-Shigella' = 'g__Escherichia-Shigella',
+    'g__Lachnoclostridium' = 'g__Lachnoclostridium',
+    's__Bacteroides_thetaiotaomicron' = 's__Bacteroides_thetaiotaomicron')
+  ) +
+  theme_test() +
+  theme(
+    axis.text = element_text(size=14),
+    axis.title = element_text(size=16),
+  )
+```
