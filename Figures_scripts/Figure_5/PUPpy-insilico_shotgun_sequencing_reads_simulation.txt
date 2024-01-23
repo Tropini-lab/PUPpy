@@ -1,0 +1,70 @@
+# Script to generate simulated in silico shotgun sequencing reads
+
+# Achieved using insilicoseq
+
+# Define variable
+workDIR=./PUPpy/July2023_PUPpy_quantification_evaluation
+ShotDIR=${workDIR}/July2023_shotgun_analysis
+inSilicoDIR=${ShotDIR}/7.readSimulation_coverage
+SSSgenomes=./PUPpy/July2023_PUPpy_quantification_evaluation/SSS-genomes
+
+# Mkdir:
+mkdir -p ${ShotDIR}/7.readSimulation_coverage
+mkdir -p ${inSilicoDIR}/analysis
+mkdir -p ${inSilicoDIR}/insilicoReads
+mkdir -p ${inSilicoDIR}/analysis/1.fastp_trimmedReads
+mkdir -p ${inSilicoDIR}/analysis/2.bowtie2_analysis
+mkdir -p ${inSilicoDIR}/analysis/2.bowtie2_analysis/index
+mkdir -p ${inSilicoDIR}/analysis/2.bowtie2_analysis/alignments
+mkdir -p ${inSilicoDIR}/analysis/2.bowtie2_analysis/alignments/bam
+mkdir -p ${inSilicoDIR}/analysis/2.bowtie2_analysis/alignments/bam/sorted_bam
+mkdir -p ${inSilicoDIR}/analysis/3.coverM_RA
+mkdir -p ${inSilicoDIR}/analysis/4.kraken2RA/
+mkdir -p ${inSilicoDIR}/analysis/4.kraken2RA/reports
+mkdir -p ${inSilicoDIR}/analysis/4.kraken2RA/reads_out
+mkdir -p ${inSilicoDIR}/analysis/4.kraken2RA/Kraken_out
+
+# halfnormal, exponential or zero-inflated-lognormal
+conda activate insilicoseq
+
+# Generate in silico reads - uniform (10%)
+iss generate --cpus 20 \
+--mode basic \
+--draft ${SSSgenomes}/* \
+--coverage uniform \
+--n_reads 1.1M \
+--output ${ShotDIR}/7.readSimulation_coverage/SSS142_Coverage_uniform/SSS142_uniform_InSilico
+
+# Generate in silico reads - halfnormal
+iss generate --cpus 20 \
+--mode basic \
+--draft ${SSSgenomes}/* \
+--coverage halfnormal \
+--n_reads 1.1M \
+--output ${ShotDIR}/7.readSimulation_coverage/SSS142_Coverage_halfnormal/SSS142_halfnormal_InSilico
+
+# Generate in silico reads - lognormal
+iss generate --cpus 20 \
+--mode basic \
+--draft ${SSSgenomes}/* \
+--coverage lognormal \
+--n_reads 1.1M \
+--output ${ShotDIR}/7.readSimulation_coverage/SSS142_Coverage_lognormal/SSS142_lognormal_InSilico
+
+# Generate in silico reads - exponential
+iss generate --cpus 20 \
+--mode basic \
+--draft ${SSSgenomes}/* \
+--coverage exponential \
+--n_reads 1.1M \
+--output ${ShotDIR}/7.readSimulation_coverage/SSS142_Coverage_exponential/SSS142_exponential_InSilico
+
+# Generate in silico reads - zero-inflated-lognormal
+iss generate --cpus 20 \
+--mode basic \
+--draft ${SSSgenomes}/* \
+--coverage zero_inflated_lognormal \
+--n_reads 1.1M \
+--output ${ShotDIR}/7.readSimulation_coverage/SSS142_Coverage_zero_inflated_lognormal/SSS142_zero-inflated-lognormal_InSilico
+
+## Use scripts for Figure 4 to estimate microbial relative abundance from the in silico generated shotgun sequencing data.
