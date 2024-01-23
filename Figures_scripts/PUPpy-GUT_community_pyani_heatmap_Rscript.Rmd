@@ -1,0 +1,140 @@
+---
+title: "Script to analyse pyani output and generate heatmap of the GUT community used to validate PUPpy"
+output: html_document
+date: "2024-01-16"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+# load the libraries
+library(tidyverse)
+library(ComplexHeatmap)
+library(readxl)
+library(circlize)
+library(ggplot2)
+```
+
+```{r}
+# Load the identity data from the Pyani analysis
+dat <- read_excel("ANIb_percentage_identity.xlsx") %>%
+  rename("member_genomes" = "...1")
+
+# write the names for the organisms
+names <- c("member_genomes",           
+           "Akkermansia_muciniphila_DSM_22959_genomic_formatted",           
+           "Enterococcus_faecalis_TX1322_genomic_formatted",           
+           "Collinsella_stercoris_DSM_13279_genomic_formatted",           
+           "M_intestinale_G6_CLOSED_genome",           
+           "Eubacterium_rectale_ATCC_33656_genomic_formatted",           
+           "Escherichia_coli_BW25113_strain_K_12_genomic_formatted",           
+           "Faecalibacterium_prausnitzii_A2_165_genomic_formatted",           
+           "Clostridium_sporogenes_ATCC_15579_genomic_formatted",           
+           "Bacteroides_thetaiotaomicron_VPI_5482_genomic_formatted",           
+           "Bacteroides_ovatus_ATCC_8483_genomic_formatted")
+
+# give new names
+new_names <- c("A.muciniphila DSM 22959",               
+               "E.faecalis TX 1322",               
+               "C.stercoris DSM 13279",               
+               "M.intestinale G6",               
+               "E.rectale ATCC 33656",               
+               "E.coli BW25113",               
+               "F.prausnitzii A2 165",               
+               "C.sporogenes ATCC 15579",               
+               "B.thetaiotaomicron VPI 5482",               
+               "B.ovatus ATCC 8483")
+
+# match both rows and column names based on the 'names' variable
+dat <- dat[match(names[-1], dat$member_genomes), names]
+```
+
+```{r}
+# Make the matrix from identity data
+dat_matrix <- as.matrix(dat[-1]) # takes out the first colum (row names)
+rownames(dat_matrix) <- dat %>% select(1) %>% pull
+rownames(dat_matrix) <- new_names
+colnames(dat_matrix) <- new_names
+dat_matrix
+```
+
+```{r}
+# Load the data from the coverage results
+dat <- read_excel("ANIb_alignment_coverage.xlsx")%>%        
+rename("member_genomes" = "...1")
+
+# write the names for the organisms
+names <- c("member_genomes",           
+           "Akkermansia_muciniphila_DSM_22959_genomic_formatted",           
+           "Enterococcus_faecalis_TX1322_genomic_formatted",           
+           "Collinsella_stercoris_DSM_13279_genomic_formatted",           
+           "M_intestinale_G6_CLOSED_genome",           
+           "Eubacterium_rectale_ATCC_33656_genomic_formatted",           
+           "Escherichia_coli_BW25113_strain_K_12_genomic_formatted",           
+           "Faecalibacterium_prausnitzii_A2_165_genomic_formatted",           
+           "Clostridium_sporogenes_ATCC_15579_genomic_formatted",           
+           "Bacteroides_thetaiotaomicron_VPI_5482_genomic_formatted",           
+           "Bacteroides_ovatus_ATCC_8483_genomic_formatted")
+
+# give new names
+new_names <- c("A.muciniphila DSM 22959",               
+               "E.faecalis TX 1322",               
+               "C.stercoris DSM 13279",               
+               "M.intestinale G6",               
+               "E.rectale ATCC 33656",               
+               "E.coli BW25113",               
+               "F.prausnitzii A2 165",               
+               "C.sporogenes ATCC 15579",               
+               "B.thetaiotaomicron VPI 5482",               
+               "B.ovatus ATCC 8483")
+
+# match both rows and column names based on the 'names' variable
+dat <- dat[match(names[-1], dat$member_genomes), names]
+```
+
+```{r}
+# Make the matrix from coverage data
+dat_coverage <- as.matrix(dat[-1])
+rownames(dat_coverage) <- dat %>% select(1) %>% pull
+rownames(dat_coverage) <- new_names
+colnames(dat_coverage) <- new_names
+dat_coverage
+```
+
+```{r}
+# Merge identity and coverage
+m_coverage = as.data.frame(as.table(dat_coverage))
+m_matrix = as.data.frame(as.table(dat_matrix))
+
+m_combined = cbind(m_coverage,m_matrix)
+colnames(m_combined) = c('c1','c2','Percentage Coverage','c4','c5','Percentage Identity')
+```
+
+```{r}
+# Plot using ggplot
+ggplot(m_combined) + 
+  geom_point(
+    aes(x = c1,
+        y = c2,                 
+        size = `Percentage Coverage`,                 
+        fill = `Percentage Identity`),
+    shape=21, colour="black") + 
+  ylab(NULL) +  
+  xlab(NULL) +  
+  scale_fill_gradient2(limits = c(0.7,1.0),
+                       low = 'lightyellow',
+                       high = 'brown', 
+                       midpoint = 0.85,
+                       mid = 'red') +
+  theme(axis.text.x = element_text(angle = 60, hjust=1, colour="black"), 
+        axis.text.y = element_text(colour = "black"), 
+        panel.background = element_rect(fill = "whitesmoke"), 
+        panel.grid = element_line(size=0.5, color="white"), 
+        axis.line = element_line(colour="black", size=0.5)
+        )
+```
+
+
+
