@@ -1,0 +1,3 @@
+# Code to annotate the Muribaculum intestinale genomic assembly using Prokka
+
+prokka --outdir M_intestinale_G6-PROKKA_output --addgenes --addmrna --gffver 3 --genus Muribaculum --kingdom Bacteria --gcode 11 M_intestinale_G6_CLOSED_genome.fasta

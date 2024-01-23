@@ -1,0 +1,13 @@
+# Code and instructions to generate microbe-specific primers for the GUT community, used in Figure 2B, 4B, and 4C of the PUPpy paper.
+
+# Gather the CDS files of all 10 GUT community members. Table S1 indicates the NCBI sources where 9 out of 10 assemblies can be found. The CDS file of M. intestinale G6 can be found in the Borealis dataset of the PUPpy paper: https://borealisdata.ca/privateurl.xhtml?token=37d3e60b-62ca-40d8-9696-f77f9d7ccb57
+
+# Activate Conda environment
+conda activate puppy
+
+# Align CDS files of all 10 GUT community members
+## The folder '10Member_GUT_CDSes' contains all 9 CDS files downloaded from the NCBI and the M. intestinale annotation.
+puppy-align -pr 10Member_GUT_CDSes -o GUT_Align_OUT
+
+# Design microbe-specific primers for all 10 GUT community members
+puppy-primers -pr 10Member_GUT_CDSes -i GUT_Align_OUT/ResultDB.tsv -o GUT_primers -s 125 175 -optm 62 -tmd 1.5
