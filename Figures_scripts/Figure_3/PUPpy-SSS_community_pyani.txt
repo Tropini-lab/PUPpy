@@ -1,0 +1,13 @@
+# Create a conda virtual environment
+conda create --name ani_pyani
+
+# install pyani using anaconda
+conda install -n ani_pyani -c anaconda openpyxl
+
+# activate the conda environment
+conda activate ani_pyani
+
+# SSS
+average_nucleotide_identity.py -v -i ANI_SSS_genomes/10member_SSS_community \
+    -o SSS_community-ANI_analysis -m ANIb -g --gformat png,pdf,eps \
+    --write_excel
