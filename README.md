@@ -219,6 +219,8 @@ The GUI also consists of 2 parts, as shown below:
 </p>
 
 - The left half must be run first, as it executes the `puppy-align` script with modifiable parameters.
+  - The field "puppy-align script folder" automatically populates with the location of the installed puppy scripts. Required to run `puppy-align` and `puppy-primers` from the GUI.
+  - Alignment stringency parameters can be modified by clicking on the expandable "Alignment Stringency Parameters" button.
 - The right half can be run second and it executes the `puppy-primers` script.
   - Input fields are automatically populated after running `puppy-align`, but you can change them based on your needs.
   - Primer design parameters can be modified by clicking on the expandable "Primer Design Parameters" button.
