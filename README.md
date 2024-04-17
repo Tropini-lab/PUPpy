@@ -231,38 +231,54 @@ All command-line parameters are also available in the GUI.
 Parameters for **``puppy-align``**
 
 ```
-General:
-  --help			This help
-  --primerTarget [X]		Directory with the CDS files of the intended targets in the defined microbial community, for which primers should be designed (default '')
-  --nonTarget [X]		Directory with CDS files of unintended targets in the defined microbial community, for specificity checks (default '')
-  --outdir [X]			Output directory (default 'Align_OUT')
-  --identity [X]		Identity thresholds to report sequence alignments by MMseqs2 (default '0.3')
+usage: puppy-align [-h] -pr PRIMERTARGET [-nt NONTARGET] [-o OUTDIR] [-id IDENTITY] [-mal MIN_ALN_LEN] [-c COVERAGE] [--covMode COVMODE] [-v]
+
+Options:
+  -pr, --primerTarget  Directory with the CDS files of the targets in the defined microbial community, for which primers should be designed. Required.
+  -nt, --nonTarget     Directory with CDS files of non-targets in the defined microbial community, for specificity checks.
+  -o, --outdir         Relative path to the output folder. Default: Align_OUT.
+  -v, --version        Show the version of the script and exit.
+
+Alignment options (adjust with caution):
+  -id, --identity      Minimum percentage identity to report sequence alignments (-id [0.0,1.0]). Default: 0.0.
+  -mal, --min_aln_len  Minimum alignment length to report sequence alignments. Default: 0.
+  -c, --coverage       Minimum percentage coverage to report sequence alignments (-c [0.0,1.0]). Default: 0.0.
+  --covMode            Coverage mode to report alignments during mmseqs search. Options:
+                         0 = alignment covers at least -c [] of query and target,
+                         1 = alignment covers at least -c [] of target,
+                         2 = alignment covers at least -c [] of query,
+                         3 = target is at least -c [] of query length.
+                       See MMseqs2 manual for details. Default: 0.
 ```
 
 Parameters for **``puppy-primers``**
 
 ```
-General:
-  --help			This help
-  --primers_type [X]		Design unique or shared primers among the target bacterial group (default 'unique')
-  --primerTarget [X]		Directory containing the CDS files for the species to design taxon-specific primers (default '')
-  --input [X]			Input file to generate primers. Either 'ResultDB.tsv' OR 'UniqueGenesList.tsv' file must be provided (default '')
-  --outdir [X]			Relative path to the output folder (default 'Primer3_output')
-Primer3 parameters:
-  --genes_number [X]		Number of genes per species to design primers (default '5')
-  --primers_number [X]		Number of primer pairs to design for each gene (default '4')
-  --optimal_primer_size [X]	Primer optimal size (default '20')
-  --min_primer_size [X]		Primer minimum size (default '18')
-  --max_primer_size [X]		Primer maximum size (default '22')
-  --optimal_primer_Tm [X]	Primer optimal melting temperature (default '60.0')
-  --min_primer_Tm [X]		Primer minimum melting temperature (default '58.0')
-  --max_primer_Tm [X]		Primer maximum melting temperature (default '63.0')
-  --max_Tm_diff [X]		Maximum Tm difference between the primer pair (default '2.0')
-  --min_primer_gc [X]		Primer minimum GC content (default '40.0')
-  --max_primer_gc [X]		Primer maximum GC content (default '60.0')
-  --product_size_range [X]	Product size range (default '75 150')
-  --max_poly_x [X]		Maximum poly X allowed (default '3')
-  --GC_clamp [X]		Primer GC clamp (default '1')
+usage: puppy-primers [-h] -pr PRIMERTARGET -i INPUT [-p {unique,group}] [-o OUTDIR] [-ng GENES_NUMBER] [-np PRIMERS_NUMBER] [-ops OPTIMAL_PRIMER_SIZE] [-mips MIN_PRIMER_SIZE]
+            [-maps MAX_PRIMER_SIZE] [-optm OPTIMAL_PRIMER_TM] [-mitm MIN_PRIMER_TM] [-matm MAX_PRIMER_TM] [-tmd MAX_TM_DIFF] [-migc MIN_PRIMER_GC] [-magc MAX_PRIMER_GC]
+            [-s PRODUCT_SIZE_RANGE] [-mpolyx MAX_POLY_X] [-GCc GC_CLAMP] [-v]
+Options:
+  -p, --primers_type           Type of primers to design ('unique' or 'group'). Default: 'unique'.
+  -pr, --primerTarget          Directory containing CDS files for species to design taxon-specific primers. Required.
+  -i, --input                  Input file (ResultDB.tsv) from `puppy-align` or UniqueGenesList.tsv. Required.
+  -o, --outdir                 Output directory for primer design files. Default: 'Primer3_output'.
+  -v, --version                Show the version of the script and exit.
+
+Primer Design Parameters:
+  -ng, --genes_number          Number of genes per species for primer design. Default: 5.
+  -np, --primers_number        Number of primer pairs to design for each gene. Default: 4.
+  -ops, --optimal_primer_size  Optimal size of primers. Default: 20.
+  -mips, --min_primer_size     Minimum size of primers. Default: 18.
+  -maps, --max_primer_size     Maximum size of primers. Default: 22.
+  -optm, --optimal_primer_Tm   Optimal melting temperature (Tm) of primers. Default: 60.0.
+  -mitm, --min_primer_Tm       Minimum Tm of primers. Default: 58.0.
+  -matm, --max_primer_Tm       Maximum Tm of primers. Default: 63.0.
+  -tmd, --max_Tm_diff          Maximum Tm difference between primer pairs. Default: 2.0.
+  -migc, --min_primer_gc       Minimum GC content of primers. Default: 40.0.
+  -magc, --max_primer_gc       Maximum GC content of primers. Default: 60.0.
+  -s, --product_size_range     Range of desired product sizes (format: min-max). Default: '75-150'.
+  -mpolyx, --max_poly_x        Maximum length of homopolymer runs in primers. Default: 3.
+  -GCc, --GC_clamp             Number of G/C bases at the 3' end of primers. Default: 1.
 ```
 
 # Input
