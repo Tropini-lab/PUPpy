@@ -215,7 +215,7 @@ Remember to run ```<PATH>/puppy-GUI``` if you installed PUPpy from the exported 
 The GUI also consists of 2 parts, as shown below:
 
 <p align="center">
-  <img src="./images/PUPpy_GUI-example.png" width="1000" />
+  <img src="./images/PUPpy-GUI.png" width="1000" />
 </p>
 
 - The left half must be run first, as it executes the `puppy-align` script with modifiable parameters.
