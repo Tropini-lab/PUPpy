@@ -228,6 +228,8 @@ The GUI also consists of 2 parts, as shown below:
 
 All command-line parameters are also available in the GUI.
 
+**Usage Tip**: If you find the GUI to be laggy, I find that highlight the fields/parameters to change helped speed it up.
+
 ## PUPpy parameters
 
 Parameters for **``puppy-align``**
