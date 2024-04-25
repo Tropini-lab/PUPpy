@@ -4,7 +4,7 @@ setup(
     name='puppy',
     use_scm_version={
             "local_scheme": "node-and-timestamp",
-            "fallback_version": "1.1.1",
+            "fallback_version": "1.1.2",
         },
     packages=find_packages(),
     install_requires=[
