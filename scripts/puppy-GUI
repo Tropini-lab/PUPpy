@@ -152,7 +152,7 @@ def toggle_primer_params():
         help_button.grid(row=19, column=0, sticky='W')
 
 window = tk.Tk()
-window.title("PUPpy Pipeline GUI (v1.1.1)")
+window.title("PUPpy Pipeline GUI (v1.1.2)")
 
 # Define tkinter variables: puppy-align
 outdir_var = tk.StringVar(value="Align_OUT")  # Default value for output folder

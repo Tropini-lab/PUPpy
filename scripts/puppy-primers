@@ -18,7 +18,7 @@ import argparse
 from importlib.metadata import version, PackageNotFoundError
 
 # puppy version
-__version__ = "1.1.1"
+__version__ = "1.1.2"
 
 ######################################################## flags ###########################################################################
 
@@ -1186,25 +1186,13 @@ if args.primers_type == "unique":
 
         # Design primers with primer3
         for i in range(genes_number):
-            print("n_rows")
-            print(n_rows)
 
             i_cds = n_rows.iloc[i, 1]  # Return the 2nd column (i.e. the gene_name) for each row.
             i_length = n_rows.iloc[i, 2]  # Return the 3rd column (i.e. the gene_length) for each row.
             i_annotation = n_rows.iloc[i, 3]  # Return the 4th column (i.e. the annotation) for each row.
-            
-            print("i_cds")
-            print(i_cds)  
-            print("i_length")
-            print(i_length)
-            print("i_annotation")
-            print(i_annotation)
 
             record_dictionary = extract_seq_dict(cds_filenames, speciesName)
             i_sequence = extract_seq(i_cds, record_dictionary)
-
-            print("i_sequence")
-            print(i_sequence)
 
             filename = speciesName + "_" + i_cds
             # Generate N primers (determined by flag: --primers_number) using primer3
