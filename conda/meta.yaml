@@ -4,7 +4,7 @@ package:
 
 source:
   url: https://github.com/Tropini-lab/PUPpy/archive/refs/tags/v1.1.2.tar.gz
-  sha256: 
+  sha256: 7c802f113b3586c687cf0b46170aa92e7364fac15d1fb165b45c0eca653a7a95
 
 build:
   number: 0
