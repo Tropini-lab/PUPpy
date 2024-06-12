@@ -239,20 +239,30 @@ usage: puppy-align [-h] -pr PRIMERTARGET [-nt NONTARGET] [-o OUTDIR] [-id IDENTI
 
 Options:
   -pr, --primerTarget  Directory with the CDS files of the targets in the defined microbial community, for which primers should be designed. Required.
+                       Input filenames must meet these conditions:
+                            - Contain a unique identifier at the beginning of the name (e.g. EcoliBW25113);
+                            - Contain the string "cds" after the unique identifier;
+                            - End with the extension .fna (PUPpy automatically only uses such files in the given folder).
+                       A filename example is: "EcoliBW25113_cds.fna". For more detailed instructions, please refer to the PUPpy GitHub documentation.
   -nt, --nonTarget     Directory with CDS files of non-targets in the defined microbial community, for specificity checks.
   -o, --outdir         Relative path to the output folder. Default: Align_OUT.
   -v, --version        Show the version of the script and exit.
-
 Alignment options (adjust with caution):
-  -id, --identity      Minimum percentage identity to report sequence alignments (-id [0.0,1.0]). Default: 0.0.
-  -mal, --min_aln_len  Minimum alignment length to report sequence alignments. Default: 0.
-  -c, --coverage       Minimum percentage coverage to report sequence alignments (-c [0.0,1.0]). Default: 0.0.
+  -id, --identity      Minimum percentage identity to report sequence alignments (-id [0.0,1.0]). Default: 0.3
+  -mal, --min_aln_len  Minimum alignment length to report sequence alignments. Default: 0
+  -c, --coverage       Minimum percentage coverage to report sequence alignments (-c [0.0,1.0]). Default: 0.0
   --covMode            Coverage mode to report alignments during mmseqs search. Options:
                          0 = alignment covers at least -c [] of query and target,
                          1 = alignment covers at least -c [] of target,
                          2 = alignment covers at least -c [] of query,
                          3 = target is at least -c [] of query length.
-                       See MMseqs2 manual for details. Default: 0.
+                       See MMseqs2 manual for details. Default: 0
+  
+
+Examples:
+  puppy-align -pr /path/to/primerTarget -nt /path/to/nonTarget --covMode 1
+
+  puppy-align -pr /path/to/primerTarget -o /path/to/alignOUT --identity 0.75 -mal 100
 ```
 
 Parameters for **``puppy-primers``**
@@ -263,36 +273,43 @@ usage: puppy-primers [-h] -pr PRIMERTARGET -i INPUT [-p {unique,group}] [-o OUTD
             [-s PRODUCT_SIZE_RANGE] [-mpolyx MAX_POLY_X] [-GCc GC_CLAMP] [-v]
 Options:
   -p, --primers_type           Type of primers to design ('unique' or 'group'). Default: 'unique'.
-  -pr, --primerTarget          Directory containing CDS files for species to design taxon-specific primers. Required.
+  -pr, --primerTarget          Directory with the CDS files of the targets in the defined microbial community, for which primers should be designed. Required.
+                               Input filenames must meet these conditions:
+                                    - Contain a unique identifier at the beginning of the name (e.g. EcoliBW25113);
+                                    - Contain the string "cds" after the unique identifier;
+                                    - End with the extension .fna (PUPpy automatically only uses such files in the given folder).
+                               A filename example is: "EcoliBW25113_cds.fna". For more detailed instructions, please refer to the PUPpy GitHub documentation.  
   -i, --input                  Input file (ResultDB.tsv) from `puppy-align` or UniqueGenesList.tsv. Required.
   -o, --outdir                 Output directory for primer design files. Default: 'Primer3_output'.
   -v, --version                Show the version of the script and exit.
 
 Primer Design Parameters:
-  -ng, --genes_number          Number of genes per species for primer design. Default: 5.
-  -np, --primers_number        Number of primer pairs to design for each gene. Default: 4.
-  -ops, --optimal_primer_size  Optimal size of primers. Default: 20.
-  -mips, --min_primer_size     Minimum size of primers. Default: 18.
-  -maps, --max_primer_size     Maximum size of primers. Default: 22.
-  -optm, --optimal_primer_Tm   Optimal melting temperature (Tm) of primers. Default: 60.0.
-  -mitm, --min_primer_Tm       Minimum Tm of primers. Default: 58.0.
-  -matm, --max_primer_Tm       Maximum Tm of primers. Default: 63.0.
-  -tmd, --max_Tm_diff          Maximum Tm difference between primer pairs. Default: 2.0.
-  -migc, --min_primer_gc       Minimum GC content of primers. Default: 40.0.
-  -magc, --max_primer_gc       Maximum GC content of primers. Default: 60.0.
-  -s, --product_size_range     Range of desired product sizes (format: min-max). Default: '75-150'.
-  -mpolyx, --max_poly_x        Maximum length of homopolymer runs in primers. Default: 3.
-  -GCc, --GC_clamp             Number of G/C bases at the 3' end of primers. Default: 1.
+  -ng, --genes_number          Number of genes per species for primer design. Default: 5
+  -np, --primers_number        Number of primer pairs to design for each gene. Default: 4
+  -ops, --optimal_primer_size  Optimal size of primers. Default: 20
+  -mips, --min_primer_size     Minimum size of primers. Default: 18
+  -maps, --max_primer_size     Maximum size of primers. Default: 22
+  -optm, --optimal_primer_Tm   Optimal melting temperature (Tm) of primers. Default: 60.0
+  -mitm, --min_primer_Tm       Minimum Tm of primers. Default: 58.0
+  -matm, --max_primer_Tm       Maximum Tm of primers. Default: 63.0
+  -tmd, --max_Tm_diff          Maximum Tm difference between primer pairs. Default: 2.0
+  -migc, --min_primer_gc       Minimum GC content of primers. Default: 40.0
+  -magc, --max_primer_gc       Maximum GC content of primers. Default: 60.0
+  -s, --product_size_range     Range of desired product sizes (format: min-max). Default: '75-150'
+  -mpolyx, --max_poly_x        Maximum length of homopolymer runs in primers. Default: 3
+  -GCc, --GC_clamp             Number of G/C bases at the 3' end of primers. Default: 1
+
+Examples:
+  puppy-primers -pr /path/to/primerTarget -i /path/to/Align_OUT/ResultDB.tsv --primers_type unique
+
+  puppy-primers -pr /path/to/primerTarget -i /path/to/Align_OUT/ResultDB.tsv -ng 3 -ops 22 -optm 63 --product_size_range 100-200 -GCc 2
 ```
 
 # Input
 
-**IMPORTANT: CDS files in your input folder are permanently modified during both ``puppy-align`` and ``puppy-primers`` execution. 
-Always duplicate your input folder to keep an original copy of your files in case you need to re-run the scripts from scratch.**
-
 Currently, PUPpy supports CDS files generated from any of these 3 approaches: [prokka](https://github.com/tseemann/prokka), [RAST](https://rast.nmpdr.org/) and/or downloaded from the [NCBI](https://www.ncbi.nlm.nih.gov/assembly). This is necessary because PUPpy only recognises FASTA headers formats from these 3 programs.
 
-- For Prokka, rename the ``.ffn`` output file to end with the extension ``.fna``
+- For Prokka, rename the ``.ffn`` output files to end with the extension ``.fna``
 
 Examples of accepted FASTA headers are shown here:
 
