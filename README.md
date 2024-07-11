@@ -396,7 +396,7 @@ Examples of these outputs can be seen in this repository at ``OUTPUT_puppy-prime
 
 ## Citation
 
-If you use PUPpy in your research, please cite the original paper: [https://www.biorxiv.org/content/10.1101/2023.12.18.572184v1](https://www.biorxiv.org/content/10.1101/2023.12.18.572184v2)
+If you use PUPpy in your research, please cite the original paper: [[https://journals.asm.org/doi/10.1128/msphere.00360-24](https://journals.asm.org/doi/10.1128/msphere.00360-24)
 
 ## License
 
