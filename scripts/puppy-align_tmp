@@ -1,0 +1,403 @@
+#!/usr/bin/env python3
+
+# Script: puppy-align
+# Part of PUPpy distribution.
+# Many-against-many pairwise local sequence alignment of all microbial genes in input microbial community.
+
+# Author = Hans Ghezzi
+# Credits = Hans Ghezzi
+# Licence = GPL3
+# Maintainer = Hans Ghezzi
+# Email = hans.ghezzi@gmail.com
+
+# Load essential libraries
+import os
+import sys
+import argparse
+from importlib.metadata import version, PackageNotFoundError
+
+# puppy version
+__version__ = "vTest"
+
+######################################################## flags ###########################################################################
+ascii_art = """
+                                                                                
+                 @    @ @ @                  @     @                            
+              @       @                      @       @                          
+           @         @                         @       @                        
+        @          @                             @       @                      
+     @            @                               @         @                   
+   @            @                                  @           @                
+ @             @                                                 @              
+@             @       @@@@@@             @@@@@@     @             ,             
+             @        @@@@@@@           @@@@@@@     @                           
+ @           @        @@@@@@   @@@@@@@    @@@@                   @              
+   @         @          @@     @@@@@@      @                   @                
+     @        @        @          @          @      @        @  @   @  @   @    
+        @      @      @                       @     @      @    @      @@  @@   
+             @@@                               @   @   @        @   @@  @     @@
+      @@@@@@        @               @@@@@       @       @  @@   @@    @  @    @ 
+      @@@@@@@@@                @@@@@@@@         @@@@/    ( @ @@@ @   @  @       
+        @@@@@@@@@@@@          @@@@@@@@@         @@@@@    @ @ @   @   @@  @      
+       @@@@@@@@              @        @        @       @ @ @@    @  @           
+       @@@@@@          @@ @@          (@ @@@@                 
+
+ASCII art designed with manytools.org from puppy logo                  
+"""
+
+
+parser = argparse.ArgumentParser(
+    prog="PUPpy",
+    formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    description=f"""
+    PUPpy: A Phylogenetically Unique Primer pipeline in PYthon for high resolution classification of defined microbial communities.
+    """,
+)
+
+print(ascii_art)
+
+# Intercepting --help to provide a custom help message
+if '--help' in sys.argv or '-h'in sys.argv:
+    custom_help_message = """
+usage: puppy-align [-h] -pr PRIMERTARGET [-nt NONTARGET] [-o OUTDIR] [-id IDENTITY] [-mal MIN_ALN_LEN] [-c COVERAGE] [--covMode COVMODE] [-v]
+
+Options:
+  -pr, --primerTarget  Directory with the CDS files of the targets in the defined microbial community, for which primers should be designed. Required.
+                       Input filenames must meet these conditions:
+                            - Contain a unique identifier at the beginning of the name (e.g. EcoliBW25113);
+                            - Contain the string "cds" after the unique identifier;
+                            - End with the extension .fna (PUPpy automatically only uses such files in the given folder).
+                       A filename example is: "EcoliBW25113_cds.fna". For more detailed instructions, please refer to the PUPpy GitHub documentation.
+  -nt, --nonTarget     Directory with CDS files of non-targets in the defined microbial community, for specificity checks.
+  -o, --outdir         Relative path to the output folder. Default: Align_OUT.
+  -v, --version        Show the version of the script and exit.
+Alignment options (adjust with caution):
+  -id, --identity      Minimum percentage identity to report sequence alignments (-id [0.0,1.0]). Default: 0.3
+  -mal, --min_aln_len  Minimum alignment length to report sequence alignments. Default: 0
+  -c, --coverage       Minimum percentage coverage to report sequence alignments (-c [0.0,1.0]). Default: 0.0
+  --covMode            Coverage mode to report alignments during mmseqs search. Options:
+                         0 = alignment covers at least -c [] of query and target,
+                         1 = alignment covers at least -c [] of target,
+                         2 = alignment covers at least -c [] of query,
+                         3 = target is at least -c [] of query length.
+                       See MMseqs2 manual for details. Default: 0
+  
+
+Examples:
+  puppy-align -pr /path/to/primerTarget -nt /path/to/nonTarget --covMode 1
+
+  puppy-align -pr /path/to/primerTarget -o /path/to/alignOUT --identity 0.75 -mal 100
+
+For more details, refer to the GitHub documentation and the MMseqs2 manual.
+"""
+    print(custom_help_message)
+    sys.exit()
+
+# Setting up flags in python
+parser.add_argument(
+    "-pr",
+    "--primerTarget",
+    help="Directory with the CDS files of the targets in the defined microbial community, for which primers should be designed",
+    default="",
+    required=True,
+)
+
+parser.add_argument(
+    "-nt",
+    "--nonTarget",
+    help="Directory with CDS files of non targets in the defined microbial community, for specificity checks",
+    default="",
+)
+
+parser.add_argument(
+    "-o",
+    "--outdir",
+    help="Relative path to the output folder",
+    default="Align_OUT",
+)
+parser.add_argument(
+    "-id",
+    "--identity",
+    help="Identity thresholds to report sequence alignments by MMseqs2",
+    default=0.3,
+    type=float,
+)
+
+parser.add_argument(
+    "-mal",
+    "--min_aln_len",
+    help="Minimum alignment length (minimum 0)",
+    default=0
+)
+
+parser.add_argument(
+    "-c",
+    "--coverage",
+    help="Minimum coverage percentage required for the alignment to be reported in the alignment file (-c [0.0,1.0])",
+    default=0.0,
+    type=float
+)
+
+parser.add_argument(
+    "--covMode",
+    help="""Coverage mode to report alignments during mmseqs search. Options: 
+    0 = alignment covers at least -c [] of query and target,
+    1 = alignment covers at least -c [] of target, 
+    2 = alignment covers at least -c [] of query, 
+    3 = target is at least -c [] of query length. 
+    See MMseqs2 manual for details""",
+    default="0"
+)
+
+# Add --version flag
+parser.add_argument(
+    "-v",
+    "--version",
+    action="version",
+    version=f'%(prog)s {__version__}'
+)
+
+args = parser.parse_args()
+
+# Import rest of library
+import subprocess
+import pandas as pd
+from colorama import init
+from colorama import Fore, Style
+import glob
+import shutil
+import logging
+
+######################################################## variables ###########################################################################
+
+# Path to output directory
+output = os.path.abspath(args.outdir)
+
+# Check if output folder exists. If it does, offer to overwrite or exit.
+while True:
+    if os.path.exists(output):
+    # Get user input (yes or no)
+        user_input = input(f"Do you want to OVERWRITE the data in the existing '{args.outdir}' output directory? (Y/n): ")
+
+        # Check the user's response
+        if user_input == "Y":
+            # Overwrite output directory
+            print("Overwriting output directory...")
+            directory_to_overwrite = output
+            try:
+                # Remove the existing directory and its contents
+                shutil.rmtree(directory_to_overwrite)
+            except FileNotFoundError:
+                # Handle the case where the directory doesn't exist
+                pass
+
+            # Recreate the directory (an empty directory)
+            try:
+                os.makedirs(directory_to_overwrite)
+            except OSError as e:
+                # Handle any errors that occur while creating the directory
+                print("Error creating directory: " + str(e))
+            break #Exit loop if user provides valid input
+
+        elif user_input == "n":
+            # User chose not to perform the task
+            print("Please choose a different output directory name. Exiting...")
+            exit() #Exit loop if user provides valid input
+        else:
+            # Handle invalid input
+            print("Invalid input. Please enter 'Y' or 'n'.")
+
+    else:
+        os.mkdir(output)
+        break #Exit loop if output dir doesn't exist initially
+
+# Configure logging
+# Define  log file name
+log_file = 'align_logfile.txt'
+# Specify log file output dir
+log_file_path = os.path.join(output, log_file)
+
+logging.basicConfig(level=logging.DEBUG,
+                    format='%(asctime)s - %(levelname)s - %(message)s',
+                    handlers=[
+                        logging.FileHandler(log_file_path),
+                        logging.StreamHandler(sys.stdout)
+                    ])
+
+######################################################## Functions ###########################################################################
+
+def rename_fasta(f, species_name):
+    """
+    Function to modify all the FASTA headers in each input CDS file.
+    """
+    with open(f, "r") as f1:
+        data = f1.readlines()
+        new_lines = rename_fasta_headers(data, species_name)
+
+    with open(f, "w") as f2:
+        f2.writelines(new_lines)
+
+
+def rename_fasta_headers(list_of_lines, species_name):
+    """
+    Function to select FASTA header lines to which apply name changes
+    """
+    # run for loop to parse every line and change the headers
+    new_lines = []
+    for line in list_of_lines:
+        if line.startswith(">"):
+            new_lines.append(change_header(line, species_name))
+        else:
+            new_lines.append(line)
+    return new_lines
+
+
+def change_header(line, name):
+    """
+    Function to rename FASTA headers to include species name.
+    """
+    
+    # Check if the name is already in the line
+    if name in line:
+        return line
+
+    # Split the header based on different formats
+    if ".peg." in line:
+        parts = line.split(".peg.")
+        new_line = f">lcl|{name}-{parts[0].split('|')[1]}_cds_{parts[1]}"
+
+    elif "_cds" in line:
+        parts = line.split("_cds")
+        new_line = f">lcl|{name}-{parts[0].split('|')[1]}_cds{parts[1]}"
+    else:
+    # Handle the case where neither .peg. nor _cds is in the line
+        if '|' in line:
+            parts = line.split('|')
+            new_line = f">lcl|{name}-prokka_cds_{parts[1]}"
+        else:
+            # Handle the case where '|' is not present in the line
+            parts = line.split('>')
+            new_line = f">lcl|{name}-prokka_cds_{parts[1]}"
+
+    return new_line
+
+def run_mmseqs2(output, cds_intended, cds_unintended, identThresh, covPerc, CovMode, MinAlnLen):
+
+    # Concatenate input CDS files
+    with open(f"{output}/concatenated_CDSes.fna", "w") as outfile:
+        for cds_dir in [cds_intended, cds_unintended]:
+            if cds_dir and os.listdir(cds_dir):
+                for filename in glob.glob(f"{cds_dir}/*.fna"):
+                    with open(filename, "r") as infile:
+                        outfile.write(infile.read())
+   
+    # Run MMseqs2 commands and log their output
+    mmseqs2_commands = [
+        ["mmseqs", "createdb", f"{output}/concatenated_CDSes.fna", f"{output}/QueryDB"],
+        ["mmseqs", "createdb", f"{output}/concatenated_CDSes.fna", f"{output}/TargetDB"],
+        ["mmseqs", "createindex", f"{output}/TargetDB", f"{output}/mmseqs_tmp", "--search-type", "3"],
+        ["mmseqs", "search", "-c", str(covPerc), "--cov-mode", str(CovMode), "-a", "--min-seq-id", str(identThresh), "--min-aln-len", str(MinAlnLen), f"{output}/QueryDB", f"{output}/TargetDB", f"{output}/ResultDB", f"{output}/mmseqs_tmp"],
+        ["mmseqs", "convertalis", f"{output}/QueryDB", f"{output}/TargetDB", f"{output}/ResultDB", f"{output}/ResultDB.tsv", "--format-output", "query,target,qlen,tlen,alnlen,qstart,qend,tstart,tend,pident,qcov,tcov,evalue", "--search-type", "3"]
+    ]  
+
+    success = True
+    for command in mmseqs2_commands:
+        process = subprocess.run(command, text=True)
+        if process.returncode != 0:
+            success = False
+            break
+
+    # Move and clean up files
+    os.makedirs(f"{output}/align_tmp", exist_ok=True)
+    for f in glob.glob(f"{output}/Query*") + glob.glob(f"{output}/Target*") + glob.glob(f"{output}/Result*") + glob.glob(f"{output}/*concat*"):
+        shutil.move(f, f"{output}/align_tmp")
+    shutil.move(f"{output}/align_tmp/ResultDB.tsv", output)
+
+    # Add headers to ResultDB.tsv
+    headers = [
+        "query",
+        "target",
+        "qlen",
+        "tlen",
+        "alnlen",
+        "qstart",
+        "qend",
+        "tstart",
+        "tend",
+        "pident",
+        "qcov",
+        "tcov",
+        "evalue",
+    ]
+    result_file = f"{output}/ResultDB.tsv"
+    with open(result_file, 'r') as original: data = original.read()
+    with open(result_file, 'w') as modified: modified.write('\t'.join(headers) + '\n' + data)
+
+    return success
+
+def create_parent_temp_directory(base_path, dir_name="temp_RenamedInput"):
+    """Creates a parent directory for temporary directories."""
+    temp_parent_dir = os.path.join(base_path, dir_name)
+    if not os.path.exists(temp_parent_dir):
+        os.makedirs(temp_parent_dir)
+    return temp_parent_dir
+
+def create_temp_directory(original_dir, parent_temp_dir):
+    """Creates a temporary directory inside the specified parent directory and copies all files from the original directory."""
+    if original_dir:  # Make sure the original_dir is not an empty string
+        temp_dir_name = os.path.basename(original_dir) + "_temp"
+        temp_dir = os.path.join(parent_temp_dir, temp_dir_name)
+        
+        # Check if the temp_dir already exists, and if it does, delete it.
+        if os.path.exists(temp_dir):
+            shutil.rmtree(temp_dir)
+
+        # Copy all the contents of the original directory to the temp directory.
+        shutil.copytree(original_dir, temp_dir)
+        return temp_dir
+    return None  # In case the original_dir is empty, return None.
+
+##################################################### RENAME FASTA HEADERS #################################################################
+
+# Create a parent temporary directory
+parent_temp_dir = create_parent_temp_directory(output)
+
+# Modify the directory paths
+cds_intended = create_temp_directory(os.path.abspath(args.primerTarget), parent_temp_dir)
+# Only create the temp directory for nonTarget if it's specified
+cds_unintended = None
+if args.nonTarget:
+    cds_unintended = create_temp_directory(os.path.abspath(args.nonTarget), parent_temp_dir)
+# Execute function 'rename_fasta' to rename FASTA headers in input CDS files.
+logging.info("Renaming FASTA headers of input CDS files")
+
+# List of directories with files to rename, filtering out None values
+directories = [d for d in [cds_intended, cds_unintended] if d is not None]
+
+for directory in directories:
+
+    # Get list of files in current directory
+    cds_filenames = os.path.join(directory, "*.fna")
+
+    for f in glob.glob(cds_filenames):
+        # Extract base name of the file
+        name = os.path.basename(f)
+        # Find index of "_cds" in filename
+        i = name.index("_cds")
+        # Function to rename file FASTA headers
+        rename_fasta(f, name[:i])
+
+##################################################### Alignments with MMseqs2 #################################################################
+
+# Run MMseqs2 to align genes and capture output
+logging.info("Aligning genes with MMseqs2. This might take a while.")
+
+# Call the function with arguments
+success = run_mmseqs2(output, cds_intended, cds_unintended, args.identity, args.coverage, args.covMode, args.min_aln_len)
+
+# [Conditional 'Done' message]
+if success and os.path.exists(f"{output}/ResultDB.tsv"):
+    logging.info(f"Everything went smoothly! Check the directory {output} for output files!")
+    print(Fore.GREEN + "Done!" + Style.RESET_ALL)
+else:
+    print(Fore.RED + "An error occurred. Please check the log for details." + Style.RESET_ALL)
